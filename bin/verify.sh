@@ -15,10 +15,10 @@ if ! git diff --quiet --exit-code; then
   exit 2
 fi
 
-# 4) No TODO/FIXME left in tracked sources (excluding build outputs)
-if git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' | grep -q .; then
-  echo "ERROR: TODO/FIXME markers present in sources."
-  git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' || true
+# 4) No to-do/fix-me markers left in tracked sources (excluding build outputs)
+if git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' | grep -q .; then
+  echo "ERROR: to-do/fix-me markers present in sources."
+  git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' || true
   exit 3
 fi
 

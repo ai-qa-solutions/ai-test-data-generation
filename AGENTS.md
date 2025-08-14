@@ -38,7 +38,7 @@ if ! git diff --quiet --exit-code; then
   exit 2
 fi
 
-# 4) No TODO/FIXME left in tracked sources (excluding build outputs)
+# 4) No TODOs orFIXME left in tracked sources (excluding build outputs)
 if git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' | grep -q .; then
   echo "ERROR: TODO/FIXME markers present in sources."
   git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' || true
