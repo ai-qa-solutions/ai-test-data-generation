@@ -201,30 +201,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmd-maven-plugin.version}</version>
-                <configuration>
-                    <failOnViolation>false</failOnViolation>
-                    <skip>${pmd.skip}</skip>
-                    <skipPmdError>true</skipPmdError>
-                    <rulesets>
-                        <ruleset>${project.basedir}/configs/pmd-ruleset.xml</ruleset>
-                    </rulesets>
-                    <verbose>true</verbose>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>pmd</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

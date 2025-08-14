@@ -14,6 +14,7 @@
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/state/AgentState.java
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/FixValidationErrorsInJsonTool.java
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/GenerateJsonBySchemaTool.java
+/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/PlanFixProvider.java
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/SchemaVersionDetector.java
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ThinkHowToFixJsonTool.java
 /Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ThinkHowToGenerateTool.java

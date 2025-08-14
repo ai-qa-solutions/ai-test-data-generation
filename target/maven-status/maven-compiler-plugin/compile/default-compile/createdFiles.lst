@@ -10,6 +10,7 @@ github/ai/qa/solutions/configuration/AgentApplicationConfiguration.class
 github/ai/qa/solutions/nodes/ValidateJsonSchemaNode.class
 github/ai/qa/solutions/tools/ValidateJsonBySchemaTool.class
 github/ai/qa/solutions/AgentApplication.class
+github/ai/qa/solutions/tools/PlanFixProvider.class
 github/ai/qa/solutions/nodes/ThinkHowToFixJsonNode.class
 github/ai/qa/solutions/nodes/FixErrorsInJsonNode.class
 github/ai/qa/solutions/tools/GenerateJsonBySchemaTool.class

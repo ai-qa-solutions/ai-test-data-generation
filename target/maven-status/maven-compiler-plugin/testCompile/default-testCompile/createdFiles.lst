@@ -1,4 +1,5 @@
 ai/qa/test/data/generation/agent/SimpleAiGeneratorTest.class
 github/ai/qa/solutions/tools/SchemaVersionDetectorTest.class
+github/ai/qa/solutions/nodes/ThinkHowToFixJsonNodeTest.class
 github/ai/qa/solutions/nodes/NormalizeGeneratedJsonNodeTest.class
 github/ai/qa/solutions/nodes/VerifyJsonByJsonSchemaNodeTest.class
