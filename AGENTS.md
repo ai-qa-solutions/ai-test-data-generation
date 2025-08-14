@@ -38,10 +38,10 @@ if ! git diff --quiet --exit-code; then
   exit 2
 fi
 
-# 4) No TODOs orFIXME left in tracked sources (excluding build outputs)
-if git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' | grep -q .; then
-  echo "ERROR: TODO/FIXME markers present in sources."
-  git grep -n -E 'TODO|FIXME' -- ':!target' ':!**/generated/**' || true
+# 4) No to-do/fix-me left in tracked sources (excluding build outputs)
+if git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' | grep -q .; then
+  echo "ERROR: to-do/fix-me markers present in sources."
+  git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' || true
   exit 3
 fi
 
@@ -280,6 +280,6 @@ WHILE true:
 
 **Forbidden:**
 
-- Committing with red gate, skipping tests, or leaving TODO/FIXME.
+- Committing with red gate, skipping tests, or leaving to-do/fix-me.
 - Creating “Utils” grab-bags without domain rationale.
 - Hand-tuning formatting instead of running Spotless.
