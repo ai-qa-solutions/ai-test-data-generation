@@ -5,35 +5,39 @@ import static github.ai.qa.solutions.state.AgentState.StateKey.SCHEMA_VERSION;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import github.ai.qa.solutions.services.ChatClientRouter;
 import github.ai.qa.solutions.state.AgentState;
 import github.ai.qa.solutions.tools.ValidateJsonSchemaTool;
 import java.util.Map;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bsc.langgraph4j.GraphStateException;
 import org.bsc.langgraph4j.action.NodeAction;
-import org.springframework.ai.chat.client.ChatClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
-    private final ChatClient chatClient;
+    private static final Logger log = LoggerFactory.getLogger(ValidateJsonSchemaNode.class);
+    private final ChatClientRouter router;
     private final ValidateJsonSchemaTool validateJsonSchemaTool;
     private final ObjectMapper objectMapper;
 
     @Override
     @SneakyThrows
     public Map<String, Object> apply(final AgentState state) {
+        log.info("▶️ Stage: ValidateJsonSchemaNode — starting");
         final String schema = state.get(JSON_SCHEMA);
 
         String content = null;
         try {
-            content = chatClient
+            content = router.forNode("ValidateJsonSchemaNode")
                     .prompt(
                             """
                             Validate the following JSON Schema strictly by calling the tool `validateJsonSchema`.
-                            Return ONLY the tool JSON: {"ok":true,"compactSchema":"..."} or {"ok":false,"error":"..."}.
+                            Return ONLY the tool JSON: {\"ok\":true,\"compactSchema\":\"...\"} or {\"ok\":false,\"error\":\"...\"}.
 
                             JSON Schema:
                             %s
@@ -51,7 +55,6 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
             // ignore and fallback to direct tool call
         }
 
-        // Fallback: if model didn't return valid JSON, call tool directly
         if (content == null || content.isBlank()) {
             content = validateJsonSchemaTool.validateAndCompactSchema(schema);
         } else if (content.startsWith("```")) {
@@ -74,7 +77,6 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
         } catch (GraphStateException e) {
             throw e;
         } catch (Exception e) {
-            // last resort: call tool directly and try once more
             final String fallback = validateJsonSchemaTool.validateAndCompactSchema(schema);
             try {
                 final JsonNode root2 = objectMapper.readTree(fallback);

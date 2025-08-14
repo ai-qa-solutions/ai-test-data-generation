@@ -5,10 +5,12 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public record ValidateJsonBySchemaTool(SchemaVersionDetector versionDetector) {
 
@@ -19,6 +21,9 @@ public record ValidateJsonBySchemaTool(SchemaVersionDetector versionDetector) {
     public String validateJsonBySchema(
             @ToolParam(description = "JSON data to validate") String jsonTestData,
             @ToolParam(description = "JSON schema defining validation rules") String jsonSchema) {
+
+        log.info("🛠️ coded as tool 💻: ValidateJsonBySchemaTool");
+
         try {
             final JsonSchemaFactory factory = versionDetector.factoryWithFallback(jsonSchema);
             final Set<ValidationMessage> errors =

@@ -18,15 +18,28 @@ public record SchemaVersionDetector(ObjectMapper objectMapper) {
             final String schemaUrl = root.path("$schema").asText("");
             if (!schemaUrl.isEmpty()) {
                 final String s = schemaUrl.toLowerCase();
-                if (s.contains("2020-12")) return SpecVersion.VersionFlag.V202012;
-                if (s.contains("2019-09")) return SpecVersion.VersionFlag.V201909;
-                if (s.contains("draft-07") || s.contains("draft7")) return SpecVersion.VersionFlag.V7;
-                if (s.contains("draft-06") || s.contains("draft6")) return SpecVersion.VersionFlag.V6;
-                if (s.contains("draft-04") || s.contains("draft4")) return SpecVersion.VersionFlag.V4;
+                if (s.contains("2020-12")) {
+                    return SpecVersion.VersionFlag.V202012;
+                }
+                if (s.contains("2019-09")) {
+                    return SpecVersion.VersionFlag.V201909;
+                }
+                if (s.contains("draft-07") || s.contains("draft7")) {
+                    return SpecVersion.VersionFlag.V7;
+                }
+                if (s.contains("draft-06") || s.contains("draft6")) {
+                    return SpecVersion.VersionFlag.V6;
+                }
+                if (s.contains("draft-04") || s.contains("draft4")) {
+                    return SpecVersion.VersionFlag.V4;
+                }
             }
             // Heuristics when $schema is absent or unrecognized
             final String text = root.toString();
-            if (text.contains("\"$defs\"")) return SpecVersion.VersionFlag.V201909; // $defs introduced in 2019-09
+            if (text.contains("\"$defs\"")) {
+                // $defs introduced in 2019-09
+                return SpecVersion.VersionFlag.V201909;
+            }
         } catch (Exception ignored) {
         }
         // conservative default
@@ -55,11 +68,6 @@ public record SchemaVersionDetector(ObjectMapper objectMapper) {
             if (all.contains(v)) order.add(v);
         }
         return order;
-    }
-
-    public JsonSchemaFactory factoryFor(final String schemaText) {
-        final SpecVersion.VersionFlag flag = detectVersion(schemaText);
-        return JsonSchemaFactory.getInstance(flag);
     }
 
     public JsonSchemaFactory factoryWithFallback(final String schemaText) {

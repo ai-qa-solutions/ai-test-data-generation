@@ -6,33 +6,44 @@ import static github.ai.qa.solutions.state.AgentState.StateKey.VALIDATION_RESULT
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import github.ai.qa.solutions.services.ChatClientRouter;
 import github.ai.qa.solutions.state.AgentState;
 import github.ai.qa.solutions.tools.ValidateJsonBySchemaTool;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.bsc.langgraph4j.action.NodeAction;
-import org.springframework.ai.chat.client.ChatClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
+    private static final Logger log = LoggerFactory.getLogger(VerifyJsonByJsonSchemaNode.class);
     private final ValidateJsonBySchemaTool validateJsonBySchemaTool;
-    private final ChatClient chatClient;
+    private final ChatClientRouter router;
     private final ObjectMapper objectMapper;
+
+    public VerifyJsonByJsonSchemaNode(
+            final ValidateJsonBySchemaTool validateJsonBySchemaTool,
+            final ChatClientRouter router,
+            final ObjectMapper objectMapper) {
+        this.validateJsonBySchemaTool = validateJsonBySchemaTool;
+        this.router = router;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     @SneakyThrows
     public Map<String, Object> apply(final AgentState state) {
+        log.info("▶️ Stage: VerifyJsonByJsonSchemaNode — starting");
         final String json = state.get(GENERATED_JSON);
         final String schema = state.get(JSON_SCHEMA);
 
         String content;
         try {
-            content = chatClient
+            content = router.forNode("VerifyJsonByJsonSchemaNode")
                     .prompt(
                             """
                         Validate the JSON against the schema by calling the tool `validateJsonAgainstJsonSchema`.

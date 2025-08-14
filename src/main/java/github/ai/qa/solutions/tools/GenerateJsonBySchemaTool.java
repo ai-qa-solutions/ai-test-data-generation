@@ -1,12 +1,15 @@
 package github.ai.qa.solutions.tools;
 
-import org.springframework.ai.chat.client.ChatClient;
+import github.ai.qa.solutions.services.ChatClientRouter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
 @Component
-public record GenerateJsonBySchemaTool(ChatClient chatClient) {
+public record GenerateJsonBySchemaTool(ChatClientRouter router) {
+    private static final Logger log = LoggerFactory.getLogger(GenerateJsonBySchemaTool.class);
 
     @Tool(
             name = "generateJsonFromSchema",
@@ -18,7 +21,10 @@ public record GenerateJsonBySchemaTool(ChatClient chatClient) {
             @ToolParam(description = "JSON schema") final String jsonSchema,
             @ToolParam(description = "Structured generation recommendations based on the scenario")
                     final String recommendation) {
-        return chatClient
+
+        log.info("🛠️ Agent as tool 🤖: GenerateJsonBySchemaTool");
+
+        return router.forNode("GenerateJsonBySchemaTool")
                 .prompt(
                         """
                                 Produce ONLY a single RFC8259-compliant JSON object that strictly conforms to the JSON Schema.

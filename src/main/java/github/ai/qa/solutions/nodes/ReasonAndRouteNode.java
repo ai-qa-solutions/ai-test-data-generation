@@ -4,21 +4,26 @@ import static github.ai.qa.solutions.state.AgentState.StateKey.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import github.ai.qa.solutions.services.ChatClientRouter;
 import github.ai.qa.solutions.state.AgentState;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.bsc.langgraph4j.action.NodeAction;
-import org.springframework.ai.chat.client.ChatClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class ReasonAndRouteNode implements NodeAction<AgentState> {
-
-    private final ChatClient chatClient;
+    private static final Logger log = LoggerFactory.getLogger(ReasonAndRouteNode.class);
+    private final ChatClientRouter router;
     private final ObjectMapper objectMapper;
+
+    public ReasonAndRouteNode(final ChatClientRouter router, final ObjectMapper objectMapper) {
+        this.router = router;
+        this.objectMapper = objectMapper;
+    }
 
     private static final String DECISION_END = "END";
     private static final String DECISION_FIX = "FIX";
@@ -27,6 +32,7 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
     @Override
     @SneakyThrows
     public Map<String, Object> apply(final AgentState state) {
+        log.info("▶️ Stage: ReasonAndRouteNode — starting");
         final Map<String, Object> updates = new HashMap<>();
 
         final String validation = state.get(VALIDATION_RESULT);
@@ -82,7 +88,7 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
         final String jsonSchema = state.get(JSON_SCHEMA);
         final String json = state.get(GENERATED_JSON);
 
-        final String response = chatClient
+        final String response = router.forNode("ReasonAndRouteNode")
                 .prompt(
                         """
                         Decide next action to reach schema-valid JSON.

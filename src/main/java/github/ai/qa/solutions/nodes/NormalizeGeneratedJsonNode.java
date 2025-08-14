@@ -13,9 +13,11 @@ import github.ai.qa.solutions.state.AgentState;
 import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
@@ -25,6 +27,8 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     @Override
     @SneakyThrows
     public Map<String, Object> apply(final AgentState state) {
+        log.info("▶️ Stage: NormalizeGeneratedJsonNode — starting");
+
         String json = state.get(GENERATED_JSON);
         // Strip markdown fences if model returned fenced JSON
         if (json.startsWith("```")) {
@@ -42,8 +46,10 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
                 HEURISTIC_SIGNATURE.name(), signature);
     }
 
-    private JsonNode normalizeNode(JsonNode node, String path, List<String> warnings) {
-        if (node == null || node.isNull()) return node;
+    private JsonNode normalizeNode(final JsonNode node, final String path, final List<String> warnings) {
+        if (node == null || node.isNull()) {
+            return node;
+        }
         if (node.isTextual()) {
             final String s = node.asText();
             final String normalized = normalizeString(s);
@@ -51,7 +57,8 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
                 warnings.add(path + ": suspicious placeholder-like value: '" + normalized + "'");
             }
             return TextNode.valueOf(normalized);
-        } else if (node.isObject()) {
+        }
+        if (node.isObject()) {
             final ObjectNode on = (ObjectNode) node;
             final Iterator<Map.Entry<String, JsonNode>> it = on.fields();
             while (it.hasNext()) {
@@ -59,7 +66,8 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
                 on.set(e.getKey(), normalizeNode(e.getValue(), path + "/" + e.getKey(), warnings));
             }
             return on;
-        } else if (node.isArray()) {
+        }
+        if (node.isArray()) {
             final ArrayNode an = (ArrayNode) node;
             for (int i = 0; i < an.size(); i++) {
                 an.set(i, normalizeNode(an.get(i), path + "[" + i + "]", warnings));
