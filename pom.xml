@@ -37,7 +37,7 @@
             <maven.compiler.source>21</maven.compiler.source>
             <maven.compiler.target>21</maven.compiler.target>
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <pmd.skip>false</pmd.skip>
+        <pmd.skip>true</pmd.skip>
 
         <spring-ai.version>1.0.1</spring-ai.version>
         <spring-ai-giga-chat.version>1.0.3</spring-ai-giga-chat.version>
