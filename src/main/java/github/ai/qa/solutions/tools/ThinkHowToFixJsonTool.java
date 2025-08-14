@@ -1,73 +1,54 @@
 package github.ai.qa.solutions.tools;
 
-import org.springframework.ai.chat.client.ChatClient;
+import github.ai.qa.solutions.services.ChatClientRouter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
 @Component
-public record ThinkHowToFixJsonTool(ChatClient chatClient) {
+public record ThinkHowToFixJsonTool(ChatClientRouter router) {
+    private static final Logger log = LoggerFactory.getLogger(ThinkHowToFixJsonTool.class);
 
     @Tool(
             name = "thinkHowToFixJson",
-            description = "Analyzes JSON schema validation errors and provides structured recommendations to fix them while adhering to test-specific constraints."
-    )
+            description =
+                    "Analyzes JSON schema validation errors and provides structured recommendations to fix them while adhering to test-specific constraints.")
     public String thinkHowToFixJson(
             @ToolParam(description = "Raw validation errors output from schema validation process") final String errors,
-            @ToolParam(description = "Test-specific scenario and data generation constraints") final String userPromt
-    ) {
-        return chatClient.prompt("""
-                            Analyze validation errors and provide structured recommendations to fix them while
-                            aligning with the test context.
-                            
-                            Validation Errors to Fix:
-                            %s
-                            
-                            Test Context (Constraints):
-                            %s
-                            
-                            Response Structure:
-                            For EACH ERROR, provide:
-                            1. Error Description: Summarize the validation issue
-                            (e.g., regex mismatch, type error).
-                            2. Root Cause: Explain why the error occurred
-                            (e.g., "Value violates regex `^[A-Z]{2}\\d{6}$`").
-                            3. Fix Recommendation:
-                               - How to correct the value
-                               (e.g., "Use 2 uppercase letters + 6 digits like `AB123456` for this field").
-                               - Reference schema constraints (regex, data type, min/max length).
-                            4. Context Alignment: Ensure fixes comply with test-specific requirements
-                            (e.g., use Russian language if implied by Test Context or validation errors).
-                            
-                            Rules:
-                            - Do NOT provide full JSON examples.
-                            - Prioritize fixes that resolve errors without introducing new violations.
-                            - For regex errors, decode the pattern first (e.g.,`^\\+7\\d{10}$` → Russian phone format).
-                            - Avoid invalid characters (e.g., `_` in integers).
-                            """.formatted(errors, userPromt)
-                )
-                .system("""
-                            You are a test data analyst specializing in JSON schema validation fixes.
-                            
-                            Follow these rules:
-                            1. Error Analysis:
-                               - Break down each validation error into root causes
-                               (regex, type, required fields, min/max constraints).
-                               - Prioritize fixes that resolve the error without violating other schema rules.
-                            2. Language Handling:
-                               - Use the same language as the test context or schema examples (default to English).
-                               - Apply Russian-specific data (e.g., ФИО, passport numbers, etc) ONLY IF the test
-                               context or errors imply Russian usage (e.g., `ФИО` in examples).
-                            3. Precision:
-                               - Always decode regex patterns before suggesting fixes
-                               (e.g., `^[A-Z]{2}\\d{6}$` → 2 uppercase letters + 6 digits).
-                               - Avoid invalid characters (e.g., `_` in integers).
-                            4. Output Focus:
-                               - Provide only structured recommendations (no explanations, code, or JSON examples).
-                               - Align fixes with the test context
-                               (e.g., use realistic Russian phone numbers if required).
-                            """
-                )
+            @ToolParam(description = "Test-specific scenario and data generation constraints") final String userPromt) {
+
+        log.info("🛠️ Agent as tool 🤖: ThinkHowToFixJsonTool");
+
+        return router.forNode("ThinkHowToFixJsonTool")
+                .prompt(
+                        """
+                        Analyze the validation errors and propose a minimal-change fix plan consistent with the test context.
+
+                        Errors:
+                        %s
+
+                        Context:
+                        %s
+
+                        Output strictly as text (no JSON). For each error include:
+                        - Path: (e.g., #/passport_rf/unit_code)
+                        - Issue: concise description (regex mismatch, missing required, type, range)
+                        - Constraint: show decoded regex/format or min/max (e.g., ^\\d{3}-\\d{3}$ → ddd-ddd)
+                        - Fix: exact change to make (only this field), provide 1 valid example value (realistic and lifelike; avoid placeholders like "Иванов Иван Иванович" or "123456789"). Avoid monotonic sequences (123…, 321…), all-equal digits (000…, 111…), trivial groups (123-456), and dummy words (test, example).
+                        - Notes: avoid changing unrelated fields; consider normalization (+7 phones, '-' vs unicode dashes, strip leading '+')
+                        """
+                                .formatted(errors, userPromt))
+                .system(
+                        """
+                        You are a precise fixer.
+                        - Suggest the smallest edits to pass validation.
+                        - Do not modify fields not implicated by the errors unless absolutely required.
+                        - Decode regex and ensure examples truly match.
+                        - Respect locale and realism; keep Russian data where implied. Prefer realistic, lifelike examples; avoid placeholders and trivial digit patterns per the Anti-Placeholder policy.
+                        - Output only the plan text; no JSON, no markdown fences.
+                        """)
                 .call()
                 .content();
     }

@@ -1,10 +1,10 @@
 package github.ai.qa.solutions.state;
 
-import org.bsc.langgraph4j.state.Channel;
-import org.bsc.langgraph4j.state.Channels;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import org.bsc.langgraph4j.state.Channel;
+import org.bsc.langgraph4j.state.Channels;
 
 public class AgentState extends org.bsc.langgraph4j.state.AgentState {
 
@@ -12,9 +12,18 @@ public class AgentState extends org.bsc.langgraph4j.state.AgentState {
         USER_PROMPT,
         GENERATED_JSON,
         VALIDATION_RESULT,
+        VALIDATION_SIGNATURE,
         JSON_SCHEMA,
+        SCHEMA_VERSION,
+        HEURISTIC_WARNINGS,
+        HEURISTIC_SIGNATURE,
         PLAN_GENERATION,
-        PLAN_FIX
+        PLAN_FIX,
+        DECISION,
+        REASONING,
+        ITERATION,
+        PREV_VALIDATION_RESULT,
+        PREV_VALIDATION_SIGNATURE
     }
 
     public static final Map<String, Channel<?>> SCHEMA = initSchema();
@@ -35,5 +44,9 @@ public class AgentState extends org.bsc.langgraph4j.state.AgentState {
     public String get(final StateKey key) {
         return this.<String>value(key.name())
                 .orElseThrow(() -> new IllegalStateException("Key did not found into AgentState: " + key));
+    }
+
+    public Optional<String> getOptional(final StateKey key) {
+        return this.value(key.name());
     }
 }
