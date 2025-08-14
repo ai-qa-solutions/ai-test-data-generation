@@ -29,8 +29,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ThinkHowToFixJsonNode implements NodeAction<AgentState> {
     private static final Logger log = LoggerFactory.getLogger(ThinkHowToFixJsonNode.class);
+    /** Tool-like provider that generates a minimal-change fix plan. */
     private final PlanFixProvider thinkHowToFixJsonTool;
 
+    /**
+     * Creates the node.
+     *
+     * @param thinkHowToFixJsonTool collaborator producing the fix plan; must not be null
+     */
     public ThinkHowToFixJsonNode(final PlanFixProvider thinkHowToFixJsonTool) {
         this.thinkHowToFixJsonTool = thinkHowToFixJsonTool;
     }

@@ -23,10 +23,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class NodeModelChatClientRouter implements ChatClientRouter {
     private static final Logger log = LoggerFactory.getLogger(NodeModelChatClientRouter.class);
+    /** Provider for GigaChat-backed {@link ChatClient} (generative/produce JSON). */
     private final ObjectProvider<ChatClient> gigaChatClient;
+    /** Provider for OpenRouter-backed {@link ChatClient} (validate/think/reason). */
     private final ObjectProvider<ChatClient> openRouterClient;
+    /** Node/tool → model mapping from external configuration. */
     private final AiClientsConfiguration.NodeModelRoutingProperties props;
 
+    /** Node/tool simple names routed to OpenRouter by default. */
     static final Set<String> DEFAULT_OPENROUTER = Set.of(
             // Nodes
             "ValidateJsonSchemaNode",
@@ -36,12 +40,20 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
             "ThinkHowToGenerateTool",
             "ThinkHowToFixJsonTool");
 
+    /** Node/tool simple names routed to GigaChat by default. */
     static final Set<String> DEFAULT_GIGACHAT = Set.of(
             // Nodes
             "GenerateJsonNode", "FixErrorsInJsonNode",
             // Tools
             "GenerateJsonBySchemaTool", "FixValidationErrorsInJsonTool");
 
+    /**
+     * Creates a router with two families and external routing properties.
+     *
+     * @param gigaChatClient   provider for GigaChat chat client
+     * @param openRouterClient provider for OpenRouter chat client
+     * @param props            configured node→model overrides
+     */
     public NodeModelChatClientRouter(
             @Qualifier("generativeChatClient") final ObjectProvider<ChatClient> gigaChatClient,
             @Qualifier("thinkingChatClient") final ObjectProvider<ChatClient> openRouterClient,
@@ -53,8 +65,10 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
 
     /** Minimal holder for a routing decision. */
     static final class Decision {
-        final String family; // "GigaChat" or "OpenRouter"
-        final String modelLabel; // configured model, or <default>/<heuristic>
+        /** Selected family: "GigaChat" or "OpenRouter". */
+        final String family;
+        /** Model label: explicit model or one of <default>/<heuristic>. */
+        final String modelLabel;
 
         Decision(final String family, final String modelLabel) {
             this.family = family;
@@ -62,9 +76,7 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
         }
     }
 
-    /**
-     * Pure decision logic that chooses target family and model label.
-     */
+    /** Pure decision logic that chooses target family and model label. */
     static Decision decideFamily(final String nodeOrToolSimpleName, final Map<String, String> configured) {
         final String model = configured == null ? null : configured.get(nodeOrToolSimpleName);
         if (model != null && !model.isBlank()) {
@@ -80,6 +92,13 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
         return new Decision("GigaChat", "<heuristic>");
     }
 
+    /**
+     * Resolves the {@link ChatClient} for the given node/tool simple name.
+     *
+     * @param nodeOrToolSimpleName simple class name of node/tool
+     * @return a non-null {@link ChatClient}
+     * @throws IllegalStateException when neither family is available
+     */
     @Override
     public ChatClient forNode(final String nodeOrToolSimpleName) {
         final Decision d = decideFamily(nodeOrToolSimpleName, props.nodes());
@@ -89,11 +108,13 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
         return pickAndLog(nodeOrToolSimpleName, d.family, d.modelLabel, openRouterClient, gigaChatClient);
     }
 
+    /** Heuristic: whether model string denotes a GigaChat model. */
     private static boolean isGigaChatModel(final String model) {
         final String m = model.toLowerCase();
         return m.contains("gigachat") || m.startsWith("giga");
     }
 
+    /** Heuristic: whether model string denotes an OpenRouter model. */
     private static boolean isOpenRouterModel(final String model) {
         // OpenRouter models typically include provider prefix like provider/model
         final String m = model.toLowerCase();
