@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * <ul>
  *   <li>Type-safe node identifiers via {@link NodeId} and outcomes via {@link Decision}.</li>
  *   <li>Flow is built directly in {@link StateGraph} — no extra layers.</li>
- *   <li>Mermaid diagram is generated from the same constants (see {@link #agentFlowMermaid()}).</li>
+ *   <li>Mermaid diagram is generated from the same constants (see {@link #agentFlowMermaid(StateGraph)}).</li>
  *   <li>Constructor injection and explicit bean contracts; no Lombok.</li>
  * </ul>
  *
@@ -225,7 +225,7 @@ public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig
     @Bean
     public LangGraphFlow langGraphFlow(final StateGraph<AgentState> stateGraph) {
         return LangGraphFlow.builder()
-                .title("(AITDG) AI Test Data Generation")
+                .title("(AITDG) AI Test Data Generation 🛟")
                 .stateGraph(stateGraph)
                 .addInputStringArg(USER_PROMPT.name())
                 .addInputStringArg(JSON_SCHEMA.name())
