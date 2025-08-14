@@ -1,16 +1,15 @@
 package github.ai.qa.solutions.nodes;
 
+import static github.ai.qa.solutions.state.AgentState.StateKey.JSON_SCHEMA;
+import static github.ai.qa.solutions.state.AgentState.StateKey.PLAN_GENERATION;
+import static github.ai.qa.solutions.state.AgentState.StateKey.USER_PROMPT;
+
 import github.ai.qa.solutions.state.AgentState;
 import github.ai.qa.solutions.tools.ThinkHowToGenerateTool;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-
-import static github.ai.qa.solutions.state.AgentState.StateKey.PLAN_GENERATION;
-import static github.ai.qa.solutions.state.AgentState.StateKey.JSON_SCHEMA;
-import static github.ai.qa.solutions.state.AgentState.StateKey.USER_PROMPT;
 
 @Service
 @AllArgsConstructor

@@ -6,8 +6,8 @@ spring.ai.gigachat:
   chat:
     options:
       model: GigaChat-2-Max
-      temperature: 0.5
-      top-p: 0.5
+      temperature: 0.95
+      top-p: 0.95
       max-tokens: 1000
 
 management:

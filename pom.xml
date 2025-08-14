@@ -45,6 +45,11 @@
         <aspectj.version>1.9.22</aspectj.version>
         <langgraph4j.version>1.6.0</langgraph4j.version>
         <json-schema-validator.version>1.5.2</json-schema-validator.version>
+
+        <!-- Formatting -->
+        <spotless.version>2.43.0</spotless.version>
+        <!-- Version of com.palantir.javaformat used by Spotless palantirJavaFormat step -->
+        <palantir.format.version>2.44.0</palantir.format.version>
     </properties>
 
     <dependencyManagement>
@@ -148,6 +153,28 @@
 <!--                        </goals>-->
 <!--                    </execution>-->
 <!--                </executions>-->
+            </plugin>
+
+            <!-- Code formatting with Spotless (Palantir Java Format) -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <palantirJavaFormat/>
+                        <removeUnusedImports/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

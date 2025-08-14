@@ -5,6 +5,4 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles
-public class SimpleAiGeneratorTest {
-
-}
+public class SimpleAiGeneratorTest {}
