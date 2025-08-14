@@ -21,7 +21,7 @@ public class ThinkHowToGenerateJsonNode implements NodeAction<AgentState> {
     public Map<String, Object> apply(final AgentState state) {
         final String schema = state.get(JSON_SCHEMA);
         final String userSpecificPromt = state.get(USER_PROMPT);
-        final String thought = thinkHowToGenerateTool.thinkHowToGenerate(schema, userSpecificPromt);
+        final String thought = thinkHowToGenerateTool.thinkHowToGenerate(userSpecificPromt, schema);
         return Map.of(PLAN_GENERATION.name(), thought);
     }
 }

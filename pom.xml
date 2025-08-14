@@ -39,11 +39,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-ai.version>1.0.0</spring-ai.version>
-        <spring-ai-giga-chat.version>1.0.1</spring-ai-giga-chat.version>
+        <spring-ai-giga-chat.version>1.0.3</spring-ai-giga-chat.version>
 
         <allure-bom.version>2.29.0</allure-bom.version>
         <aspectj.version>1.9.22</aspectj.version>
-        <langgraph4j.version>1.6.0-rc3</langgraph4j.version>
+        <langgraph4j.version>1.6.0</langgraph4j.version>
         <json-schema-validator.version>1.5.2</json-schema-validator.version>
     </properties>
 
@@ -141,13 +141,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build-image-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>build-image-no-fork</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
             </plugin>
         </plugins>
     </build>

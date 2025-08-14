@@ -24,3 +24,6 @@ management:
     health:
       probes:
         enabled: true
+  observations:
+    annotations:
+      enabled: true
