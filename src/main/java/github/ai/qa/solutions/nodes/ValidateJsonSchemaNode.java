@@ -8,92 +8,122 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import github.ai.qa.solutions.services.ChatClientRouter;
 import github.ai.qa.solutions.state.AgentState;
 import github.ai.qa.solutions.tools.ValidateJsonSchemaTool;
+import java.io.IOException;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.bsc.langgraph4j.GraphStateException;
+import java.util.Objects;
+import java.util.Optional;
+import lombok.NonNull;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * Validates and compacts the input JSON Schema.
+ *
+ * <p>Flow: ask the model to call the `validateJsonSchema` tool; if output is missing/invalid,
+ * fall back to a direct tool call. Produces a compacted schema string and optional detected version.
+ */
 @Service
-@RequiredArgsConstructor
 public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
     private static final Logger log = LoggerFactory.getLogger(ValidateJsonSchemaNode.class);
+    /** Router that selects the appropriate chat client for this node. */
     private final ChatClientRouter router;
+    /** Tool that validates and compacts JSON Schema locally. */
     private final ValidateJsonSchemaTool validateJsonSchemaTool;
+    /** JSON parser for tool/model responses. */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Creates the node with required collaborators.
+     *
+     * @param router chat client router for LLM-assisted validation
+     * @param validateJsonSchemaTool local validation tool
+     * @param objectMapper JSON parser
+     */
+    public ValidateJsonSchemaNode(
+            final ChatClientRouter router,
+            final ValidateJsonSchemaTool validateJsonSchemaTool,
+            final ObjectMapper objectMapper) {
+        this.router = Objects.requireNonNull(router, "router");
+        this.validateJsonSchemaTool = Objects.requireNonNull(validateJsonSchemaTool, "validateJsonSchemaTool");
+        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper");
+    }
+
+    private static final String PROMPT_TEMPLATE =
+            """
+            Validate the following JSON Schema strictly by calling the tool `validateJsonSchema`.
+            Return ONLY the tool JSON: {\"ok\":true,\"compactSchema\":\"...\"} or {\"ok\":false,\"error\":\"...\"}.
+
+            JSON Schema:
+            %s
+            """;
+
+    private static final String SYSTEM_INSTRUCTION =
+            """
+            You MUST call the tool `validateJsonSchema` to validate and compact the schema.
+            Then respond ONLY with the tool's JSON response, no extra text, no markdown.
+            """;
+
     @Override
-    @SneakyThrows
-    public Map<String, Object> apply(final AgentState state) {
+    public Map<String, Object> apply(@NonNull final AgentState state) {
         log.info("▶️ Stage: ValidateJsonSchemaNode — starting");
         final String schema = state.get(JSON_SCHEMA);
 
-        String content = null;
+        String content;
         try {
-            content = router.forNode("ValidateJsonSchemaNode")
-                    .prompt(
-                            """
-                            Validate the following JSON Schema strictly by calling the tool `validateJsonSchema`.
-                            Return ONLY the tool JSON: {\"ok\":true,\"compactSchema\":\"...\"} or {\"ok\":false,\"error\":\"...\"}.
-
-                            JSON Schema:
-                            %s
-                            """
-                                    .formatted(schema))
-                    .system(
-                            """
-                            You MUST call the tool `validateJsonSchema` to validate and compact the schema.
-                            Then respond ONLY with the tool's JSON response, no extra text, no markdown.
-                            """)
+            content = router.forNode(getClass().getSimpleName())
+                    .prompt(PROMPT_TEMPLATE.formatted(schema))
+                    .system(SYSTEM_INSTRUCTION)
                     .tools(validateJsonSchemaTool)
                     .call()
                     .content();
-        } catch (Exception ignored) {
-            // ignore and fallback to direct tool call
+        } catch (RuntimeException ignored) {
+            content = null;
         }
 
         if (content == null || content.isBlank()) {
             content = validateJsonSchemaTool.validateAndCompactSchema(schema);
         } else if (content.startsWith("```")) {
-            content = content.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
+            content = stripFences(content);
         }
 
+        final Optional<Map<String, Object>> parsed = parse(content);
+        if (parsed.isPresent()) return parsed.get();
+
+        // Fallback: re-run tool locally and parse; else error
+        final String fallback = validateJsonSchemaTool.validateAndCompactSchema(schema);
+        final Optional<Map<String, Object>> parsedFallback = parse(fallback);
+        return parsedFallback.orElseThrow(
+                () -> new IllegalStateException("Incorrect jsonSchema: cannot parse tool response"));
+    }
+
+    /** Removes Markdown code fences if present. */
+    private String stripFences(@NonNull final String s) {
+        if (!s.startsWith("```")) return s;
+        return s.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
+    }
+
+    /**
+     * Parses the validator response and returns either compact schema + optional version,
+     * or empty when the content is not in the expected shape.
+     */
+    private Optional<Map<String, Object>> parse(final String content) {
+        if (content == null || content.isBlank()) return Optional.empty();
         try {
             final JsonNode root = objectMapper.readTree(content);
             final boolean ok = root.path("ok").asBoolean(false);
-            if (!ok) {
-                final String error = root.path("error").asText("Unknown error");
-                throw new GraphStateException("Incorrect jsonSchema:" + error);
-            }
-            final String compact = root.path("compactSchema").asText();
+            if (!ok) return Optional.empty();
+
+            final String compact = root.path("compactSchema").asText("");
             final String version = root.path("version").asText("");
-            if (version == null || version.isEmpty()) {
-                return Map.of(JSON_SCHEMA.name(), compact);
+            if (compact.isEmpty()) return Optional.empty();
+            if (version.isEmpty()) {
+                return Optional.of(Map.of(JSON_SCHEMA.name(), compact));
             }
-            return Map.of(JSON_SCHEMA.name(), compact, SCHEMA_VERSION.name(), version);
-        } catch (GraphStateException e) {
-            throw e;
-        } catch (Exception e) {
-            final String fallback = validateJsonSchemaTool.validateAndCompactSchema(schema);
-            try {
-                final JsonNode root2 = objectMapper.readTree(fallback);
-                final boolean ok2 = root2.path("ok").asBoolean(false);
-                if (!ok2) {
-                    final String error = root2.path("error").asText("Unknown error");
-                    throw new GraphStateException("Incorrect jsonSchema:" + error);
-                }
-                final String compact2 = root2.path("compactSchema").asText();
-                final String version2 = root2.path("version").asText("");
-                if (version2 == null || version2.isEmpty()) {
-                    return Map.of(JSON_SCHEMA.name(), compact2);
-                }
-                return Map.of(JSON_SCHEMA.name(), compact2, SCHEMA_VERSION.name(), version2);
-            } catch (Exception ex) {
-                throw new GraphStateException("Incorrect jsonSchema: cannot parse tool response");
-            }
+            return Optional.of(Map.of(JSON_SCHEMA.name(), compact, SCHEMA_VERSION.name(), version));
+        } catch (IOException ignored) {
+            return Optional.empty();
         }
     }
 }

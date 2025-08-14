@@ -1,0 +1,15 @@
+github/ai/qa/solutions/nodes/GenerateJsonNode.class
+github/ai/qa/solutions/tools/ThinkHowToFixJsonTool.class
+github/ai/qa/solutions/nodes/VerifyJsonByJsonSchemaNode.class
+github/ai/qa/solutions/nodes/ThinkHowToGenerateJsonNode.class
+github/ai/qa/solutions/state/AgentState.class
+github/ai/qa/solutions/tools/FixValidationErrorsInJsonTool.class
+github/ai/qa/solutions/tools/ThinkHowToGenerateTool.class
+github/ai/qa/solutions/state/AgentState$StateKey.class
+github/ai/qa/solutions/configuration/AgentApplicationConfiguration.class
+github/ai/qa/solutions/nodes/ValidateJsonSchemaNode.class
+github/ai/qa/solutions/tools/ValidateJsonBySchemaTool.class
+github/ai/qa/solutions/AgentApplication.class
+github/ai/qa/solutions/nodes/ThinkHowToFixJsonNode.class
+github/ai/qa/solutions/nodes/FixErrorsInJsonNode.class
+github/ai/qa/solutions/tools/GenerateJsonBySchemaTool.class

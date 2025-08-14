@@ -34,7 +34,7 @@ public class AgentState extends org.bsc.langgraph4j.state.AgentState {
         for (StateKey key : StateKey.values()) {
             schemaMap.put(key.name(), defaultChannel);
         }
-        return schemaMap;
+        return java.util.Collections.unmodifiableMap(schemaMap);
     }
 
     public AgentState(Map<String, Object> initData) {

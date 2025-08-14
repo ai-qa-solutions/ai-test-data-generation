@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.7.0" timestamp="2025-08-15T02:03:51.665">
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/AgentApplication.java">
+<violation beginline="7" endline="7" begincolumn="8" endcolumn="13" rule="ClassWithOnlyPrivateConstructorsShouldBeFinal" ruleset="Design" package="github.ai.qa.solutions" class="AgentApplication" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal" priority="1">
+This class has only private constructors and may be final
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/configuration/AgentApplicationConfiguration.java">
+<violation beginline="61" endline="61" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.configuration" class="AgentApplicationConfiguration" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="64" endline="64" begincolumn="12" endcolumn="41" rule="CallSuperInConstructor" ruleset="Code Style" package="github.ai.qa.solutions.configuration" class="AgentApplicationConfiguration" method="AgentApplicationConfiguration" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#callsuperinconstructor" priority="3">
+It is a good practice to call super() in a constructor
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/configuration/AiClientsConfiguration.java">
+<violation beginline="145" endline="145" begincolumn="19" endcolumn="25" rule="UnnecessaryModifier" ruleset="Code Style" package="github.ai.qa.solutions.configuration" class="NodeModelRoutingProperties" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#unnecessarymodifier" priority="3">
+Unnecessary modifier 'static' on record 'NodeModelRoutingProperties': records are implicitly static
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/FixErrorsInJsonNode.java">
+<violation beginline="18" endline="18" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="FixErrorsInJsonNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/GenerateJsonNode.java">
+<violation beginline="18" endline="18" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="GenerateJsonNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/NormalizeGeneratedJsonNode.java">
+<violation beginline="25" endline="25" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="122" endline="122" begincolumn="41" endcolumn="56" rule="UselessParentheses" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="normalizeFullWidthDigits" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses.
+</violation>
+<violation beginline="130" endline="130" begincolumn="21" endcolumn="44" rule="CognitiveComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="isSuspiciousPlaceholder" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cognitivecomplexity" priority="3">
+The method 'isSuspiciousPlaceholder(String)' has a cognitive complexity of 17, current threshold is 15
+</violation>
+<violation beginline="130" endline="130" begincolumn="21" endcolumn="44" rule="CyclomaticComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="isSuspiciousPlaceholder" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cyclomaticcomplexity" priority="3">
+The method 'isSuspiciousPlaceholder(String)' has a cyclomatic complexity of 13.
+</violation>
+<violation beginline="130" endline="130" begincolumn="21" endcolumn="44" rule="NPathComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="isSuspiciousPlaceholder" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#npathcomplexity" priority="3">
+The method 'isSuspiciousPlaceholder(String)' has an NPath complexity of 912, current threshold is 200
+</violation>
+<violation beginline="147" endline="147" begincolumn="9" endcolumn="69" rule="SimplifyBooleanReturns" ruleset="Design" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="isSuspiciousPlaceholder" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return {condition};`
+</violation>
+<violation beginline="151" endline="151" begincolumn="21" endcolumn="40" rule="CognitiveComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="NormalizeGeneratedJsonNode" method="isMonotonicSequence" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cognitivecomplexity" priority="3">
+The method 'isMonotonicSequence(String, boolean)' has a cognitive complexity of 16, current threshold is 15
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/ReasonAndRouteNode.java">
+<violation beginline="19" endline="19" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="28" endline="28" begincolumn="33" endcolumn="45" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" variable="DECISION_END" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="29" endline="29" begincolumn="33" endcolumn="45" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" variable="DECISION_FIX" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="30" endline="30" begincolumn="33" endcolumn="52" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" variable="DECISION_REGENERATE" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="34" endline="34" begincolumn="32" endcolumn="37" rule="CognitiveComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" method="apply" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cognitivecomplexity" priority="3">
+The method 'apply(AgentState)' has a cognitive complexity of 18, current threshold is 15
+</violation>
+<violation beginline="34" endline="34" begincolumn="32" endcolumn="37" rule="CyclomaticComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" method="apply" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cyclomaticcomplexity" priority="3">
+The method 'apply(AgentState)' has a cyclomatic complexity of 20.
+</violation>
+<violation beginline="34" endline="34" begincolumn="32" endcolumn="37" rule="NPathComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="ReasonAndRouteNode" method="apply" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#npathcomplexity" priority="3">
+The method 'apply(AgentState)' has an NPath complexity of 9216, current threshold is 200
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/ThinkHowToFixJsonNode.java">
+<violation beginline="17" endline="17" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ThinkHowToFixJsonNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/ThinkHowToGenerateJsonNode.java">
+<violation beginline="17" endline="17" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ThinkHowToGenerateJsonNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/ValidateJsonSchemaNode.java">
+<violation beginline="29" endline="29" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ValidateJsonSchemaNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="53" endline="53" begincolumn="33" endcolumn="48" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ValidateJsonSchemaNode" variable="PROMPT_TEMPLATE" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="62" endline="62" begincolumn="33" endcolumn="51" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="ValidateJsonSchemaNode" variable="SYSTEM_INSTRUCTION" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/nodes/VerifyJsonByJsonSchemaNode.java">
+<violation beginline="34" endline="34" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="70" endline="70" begincolumn="33" endcolumn="35" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="OK" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="75" endline="75" begincolumn="33" endcolumn="40" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="UNKNOWN" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="77" endline="77" begincolumn="33" endcolumn="48" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="PROMPT_TEMPLATE" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="88" endline="88" begincolumn="33" endcolumn="51" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="SYSTEM_INSTRUCTION" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="93" endline="93" begincolumn="33" endcolumn="47" rule="FieldDeclarationsShouldBeAtStartOfClass" ruleset="Code Style" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" variable="UNKNOWN_RESULT" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass" priority="3">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</violation>
+<violation beginline="154" endline="154" begincolumn="43" endcolumn="58" rule="CyclomaticComplexity" ruleset="Design" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" method="parseValidation" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cyclomaticcomplexity" priority="3">
+The method 'parseValidation(String)' has a cyclomatic complexity of 10.
+</violation>
+<violation beginline="192" endline="192" begincolumn="33" endcolumn="40" rule="UnusedPrivateMethod" ruleset="Best Practices" package="github.ai.qa.solutions.nodes" class="VerifyJsonByJsonSchemaNode" method="unknown" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#unusedprivatemethod" priority="3">
+Avoid unused private methods such as 'unknown()'.
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/services/NodeModelChatClientRouter.java">
+<violation beginline="15" endline="15" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.services" class="NodeModelChatClientRouter" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="45" endline="45" begincolumn="23" endcolumn="30" rule="CyclomaticComplexity" ruleset="Design" package="github.ai.qa.solutions.services" class="NodeModelChatClientRouter" method="forNode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cyclomaticcomplexity" priority="3">
+The method 'forNode(String)' has a cyclomatic complexity of 11.
+</violation>
+<violation beginline="51" endline="51" begincolumn="57" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="github.ai.qa.solutions.services" class="NodeModelChatClientRouter" method="forNode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal "GigaChat" appears 5 times in this file; the first occurrence is on line 51
+</violation>
+<violation beginline="54" endline="54" begincolumn="57" endcolumn="69" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="github.ai.qa.solutions.services" class="NodeModelChatClientRouter" method="forNode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal "OpenRouter" appears 4 times in this file; the first occurrence is on line 54
+</violation>
+<violation beginline="99" endline="99" begincolumn="22" endcolumn="56" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="github.ai.qa.solutions.services" class="NodeModelChatClientRouter" method="pickAndLog" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/FixValidationErrorsInJsonTool.java">
+<violation beginline="12" endline="12" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="FixValidationErrorsInJsonTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+<violation beginline="18" endline="18" begincolumn="19" endcolumn="43" rule="UseObjectForClearerAPI" ruleset="Design" package="github.ai.qa.solutions.tools" class="FixValidationErrorsInJsonTool" method="fixJsonByErrorsAndSchema" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#useobjectforclearerapi" priority="3">
+Rather than using a lot of String arguments, consider using a container object for those values.
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/GenerateJsonBySchemaTool.java">
+<violation beginline="12" endline="12" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="GenerateJsonBySchemaTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/SchemaVersionDetector.java">
+<violation beginline="15" endline="15" begincolumn="36" endcolumn="49" rule="CognitiveComplexity" ruleset="Design" package="github.ai.qa.solutions.tools" class="SchemaVersionDetector" method="detectVersion" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cognitivecomplexity" priority="3">
+The method 'detectVersion(String)' has a cognitive complexity of 16, current threshold is 15
+</violation>
+<violation beginline="15" endline="15" begincolumn="36" endcolumn="49" rule="CyclomaticComplexity" ruleset="Design" package="github.ai.qa.solutions.tools" class="SchemaVersionDetector" method="detectVersion" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#cyclomaticcomplexity" priority="3">
+The method 'detectVersion(String)' has a cyclomatic complexity of 12.
+</violation>
+<violation beginline="15" endline="15" begincolumn="36" endcolumn="49" rule="NPathComplexity" ruleset="Design" package="github.ai.qa.solutions.tools" class="SchemaVersionDetector" method="detectVersion" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_design.html#npathcomplexity" priority="3">
+The method 'detectVersion(String)' has an NPath complexity of 219, current threshold is 200
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ThinkHowToFixJsonTool.java">
+<violation beginline="12" endline="12" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="ThinkHowToFixJsonTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ThinkHowToGenerateTool.java">
+<violation beginline="12" endline="12" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="ThinkHowToGenerateTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ValidateJsonBySchemaTool.java">
+<violation beginline="16" endline="16" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="ValidateJsonBySchemaTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+<file name="/Users/artemsimeisn/IdeaProjects/ai-test-data-generation/src/main/java/github/ai/qa/solutions/tools/ValidateJsonSchemaTool.java">
+<violation beginline="14" endline="14" begincolumn="33" endcolumn="36" rule="FieldNamingConventions" ruleset="Code Style" package="github.ai.qa.solutions.tools" class="ValidateJsonSchemaTool" variable="log" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.7.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The constant name 'log' doesn't match '[A-Z][A-Z_0-9]*'
+</violation>
+</file>
+</pmd>

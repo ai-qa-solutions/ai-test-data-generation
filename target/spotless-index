@@ -1,0 +1,26 @@
+Fj02aooCjkvdcl3WFWPoG02el3Ng5dDyC99f86rFccE=
+src/main/java/github/ai/qa/solutions/AgentApplication.java 2025-08-14T21:42:09.081272453Z
+src/main/java/github/ai/qa/solutions/configuration/AgentApplicationConfiguration.java 2025-08-14T22:58:56.745872305Z
+src/main/java/github/ai/qa/solutions/configuration/AiClientsConfiguration.java 2025-08-14T22:56:49.748020486Z
+src/main/java/github/ai/qa/solutions/nodes/FixErrorsInJsonNode.java 2025-08-14T22:58:28.373549544Z
+src/main/java/github/ai/qa/solutions/nodes/GenerateJsonNode.java 2025-08-14T22:58:28.462305649Z
+src/main/java/github/ai/qa/solutions/nodes/NormalizeGeneratedJsonNode.java 2025-08-14T23:01:44.397929865Z
+src/main/java/github/ai/qa/solutions/nodes/ReasonAndRouteNode.java 2025-08-14T21:42:30.447852319Z
+src/main/java/github/ai/qa/solutions/nodes/ThinkHowToFixJsonNode.java 2025-08-14T22:58:28.468797995Z
+src/main/java/github/ai/qa/solutions/nodes/ThinkHowToGenerateJsonNode.java 2025-08-14T22:58:28.454474684Z
+src/main/java/github/ai/qa/solutions/nodes/ValidateJsonSchemaNode.java 2025-08-14T22:59:04.273623873Z
+src/main/java/github/ai/qa/solutions/nodes/VerifyJsonByJsonSchemaNode.java 2025-08-14T22:58:28.407256977Z
+src/main/java/github/ai/qa/solutions/services/ChatClientRouter.java 2025-08-14T16:24:39.809566597Z
+src/main/java/github/ai/qa/solutions/services/NodeModelChatClientRouter.java 2025-08-14T22:58:12.436877701Z
+src/main/java/github/ai/qa/solutions/state/AgentState.java 2025-08-14T22:05:34.104718980Z
+src/main/java/github/ai/qa/solutions/tools/FixValidationErrorsInJsonTool.java 2025-08-14T22:58:14.905205413Z
+src/main/java/github/ai/qa/solutions/tools/GenerateJsonBySchemaTool.java 2025-08-14T17:47:03.695539562Z
+src/main/java/github/ai/qa/solutions/tools/SchemaVersionDetector.java 2025-08-14T17:40:16.975725955Z
+src/main/java/github/ai/qa/solutions/tools/ThinkHowToFixJsonTool.java 2025-08-14T17:47:05.620943966Z
+src/main/java/github/ai/qa/solutions/tools/ThinkHowToGenerateTool.java 2025-08-14T17:47:05.629776682Z
+src/main/java/github/ai/qa/solutions/tools/ValidateJsonBySchemaTool.java 2025-08-14T22:58:17.438770866Z
+src/main/java/github/ai/qa/solutions/tools/ValidateJsonSchemaTool.java 2025-08-14T22:58:21.152585392Z
+src/test/java/ai/qa/test/data/generation/agent/SimpleAiGeneratorTest.java 2025-08-14T12:55:46.934606752Z
+src/test/java/github/ai/qa/solutions/nodes/NormalizeGeneratedJsonNodeTest.java 2025-08-14T23:03:43.793052139Z
+src/test/java/github/ai/qa/solutions/nodes/VerifyJsonByJsonSchemaNodeTest.java 2025-08-14T22:56:49.709229913Z
+src/test/java/github/ai/qa/solutions/tools/SchemaVersionDetectorTest.java 2025-08-14T23:03:23.767467865Z

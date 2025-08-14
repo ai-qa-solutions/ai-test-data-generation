@@ -7,16 +7,19 @@ import static github.ai.qa.solutions.state.AgentState.StateKey.USER_PROMPT;
 import github.ai.qa.solutions.state.AgentState;
 import github.ai.qa.solutions.tools.ThinkHowToGenerateTool;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.NodeAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
-@AllArgsConstructor
 public class ThinkHowToGenerateJsonNode implements NodeAction<AgentState> {
+    private static final Logger log = LoggerFactory.getLogger(ThinkHowToGenerateJsonNode.class);
     private final ThinkHowToGenerateTool thinkHowToGenerateTool;
+
+    public ThinkHowToGenerateJsonNode(final ThinkHowToGenerateTool thinkHowToGenerateTool) {
+        this.thinkHowToGenerateTool = thinkHowToGenerateTool;
+    }
 
     @Override
     public Map<String, Object> apply(final AgentState state) {

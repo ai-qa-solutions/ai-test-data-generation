@@ -5,14 +5,15 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public record ValidateJsonBySchemaTool(SchemaVersionDetector versionDetector) {
+    private static final Logger log = LoggerFactory.getLogger(ValidateJsonBySchemaTool.class);
 
     @Tool(
             name = "validateJsonAgainstJsonSchema",

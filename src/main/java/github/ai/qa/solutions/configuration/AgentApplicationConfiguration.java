@@ -16,15 +16,14 @@ import github.ai.qa.solutions.nodes.ValidateJsonSchemaNode;
 import github.ai.qa.solutions.nodes.VerifyJsonByJsonSchemaNode;
 import github.ai.qa.solutions.state.AgentState;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.GraphRepresentation;
 import org.bsc.langgraph4j.StateGraph;
 import org.bsc.langgraph4j.action.AsyncEdgeAction;
 import org.bsc.langgraph4j.action.EdgeAction;
 import org.bsc.langgraph4j.studio.springboot.AbstractLangGraphStudioConfig;
 import org.bsc.langgraph4j.studio.springboot.LangGraphFlow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,12 +56,14 @@ import org.springframework.context.annotation.Configuration;
  *   apply_fix --> normalize_json
  * }</pre>
  */
-@Slf4j
-@AllArgsConstructor
 @Configuration(proxyBeanMethods = false)
 public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig {
-
+    private static final Logger log = LoggerFactory.getLogger(AgentApplicationConfiguration.class);
     private final ApplicationContext context;
+
+    public AgentApplicationConfiguration(final ApplicationContext context) {
+        this.context = context;
+    }
 
     /**
      * Exposes the {@link LangGraphFlow} to the studio infrastructure.
@@ -158,7 +159,6 @@ public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig
      * @return the fully wired {@link StateGraph}
      */
     @Bean
-    @SneakyThrows
     public StateGraph<AgentState> stateGraph(
             final ValidateJsonSchemaNode validateJsonSchemaNode,
             final ThinkHowToGenerateJsonNode thinkHowToGenerateJsonNode,
@@ -167,7 +167,8 @@ public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig
             final ThinkHowToFixJsonNode thinkHowToFixJsonNode,
             final FixErrorsInJsonNode fixErrorsInJsonNode,
             final ReasonAndRouteNode reasonAndRouteNode,
-            final NormalizeGeneratedJsonNode normalizeGeneratedJsonNode) {
+            final NormalizeGeneratedJsonNode normalizeGeneratedJsonNode)
+            throws org.bsc.langgraph4j.GraphStateException {
 
         // Router that maps state[DECISION] to edge labels used in conditionalEdges
         final EdgeAction<AgentState> decisionRouter = state -> {

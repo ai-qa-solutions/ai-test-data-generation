@@ -114,8 +114,8 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
                 .call()
                 .content();
 
-        String decision = DECISION_FIX;
-        String reasoning = "";
+        String decision;
+        String reasoning;
         try {
             final JsonNode root = objectMapper.readTree(response);
             decision = root.path("decision").asText(DECISION_FIX).toUpperCase();

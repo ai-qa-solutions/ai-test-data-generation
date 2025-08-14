@@ -3,15 +3,16 @@ package github.ai.qa.solutions.services;
 import github.ai.qa.solutions.configuration.AiClientsConfiguration;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class NodeModelChatClientRouter implements ChatClientRouter {
+    private static final Logger log = LoggerFactory.getLogger(NodeModelChatClientRouter.class);
     private final ObjectProvider<ChatClient> gigaChatClient;
     private final ObjectProvider<ChatClient> openRouterClient;
     private final AiClientsConfiguration.NodeModelRoutingProperties props;
@@ -42,7 +43,7 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
 
     @Override
     public ChatClient forNode(final String nodeOrToolSimpleName) {
-        final Map<String, String> configured = props.getNodes();
+        final Map<String, String> configured = props.nodes();
         final String model = configured == null ? null : configured.get(nodeOrToolSimpleName);
 
         if (model != null && !model.isBlank()) {
@@ -50,27 +51,23 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
                 return pickAndLog(nodeOrToolSimpleName, "GigaChat", model, gigaChatClient, openRouterClient);
             }
             if (isOpenRouterModel(model)) {
-                return pickAndLog(
-                        nodeOrToolSimpleName, "OpenRouter", model, openRouterClient, gigaChatClient);
+                return pickAndLog(nodeOrToolSimpleName, "OpenRouter", model, openRouterClient, gigaChatClient);
             }
         }
 
         // Fallback to sensible defaults by role
         if (DEFAULT_GIGACHAT.contains(nodeOrToolSimpleName)) {
-            return pickAndLog(
-                    nodeOrToolSimpleName, "GigaChat", "<default>", gigaChatClient, openRouterClient);
+            return pickAndLog(nodeOrToolSimpleName, "GigaChat", "<default>", gigaChatClient, openRouterClient);
         }
 
         if (DEFAULT_OPENROUTER.contains(nodeOrToolSimpleName)) {
-            return pickAndLog(
-                    nodeOrToolSimpleName, "OpenRouter", "<default>", openRouterClient, gigaChatClient);
+            return pickAndLog(nodeOrToolSimpleName, "OpenRouter", "<default>", openRouterClient, gigaChatClient);
         }
 
         // Heuristic: validate/think/reason → OpenRouter, else → GigaChat
         final String nodeLow = nodeOrToolSimpleName.toLowerCase();
         if (nodeLow.contains("validate") || nodeLow.contains("think") || nodeLow.contains("reason")) {
-            return pickAndLog(
-                    nodeOrToolSimpleName, "OpenRouter", "<heuristic>", openRouterClient, gigaChatClient);
+            return pickAndLog(nodeOrToolSimpleName, "OpenRouter", "<heuristic>", openRouterClient, gigaChatClient);
         }
 
         return pickAndLog(nodeOrToolSimpleName, "GigaChat", "<heuristic>", gigaChatClient, openRouterClient);

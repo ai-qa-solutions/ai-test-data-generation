@@ -10,40 +10,46 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import github.ai.qa.solutions.state.AgentState;
-import java.util.*;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.bsc.langgraph4j.action.NodeAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
-@AllArgsConstructor
 public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
-
+    private static final Logger log = LoggerFactory.getLogger(NormalizeGeneratedJsonNode.class);
     private final ObjectMapper objectMapper;
 
+    public NormalizeGeneratedJsonNode(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
-    @SneakyThrows
     public Map<String, Object> apply(final AgentState state) {
         log.info("▶️ Stage: NormalizeGeneratedJsonNode — starting");
-
-        String json = state.get(GENERATED_JSON);
-        // Strip markdown fences if model returned fenced JSON
-        if (json.startsWith("```")) {
-            json = json.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
+        try {
+            String json = state.get(GENERATED_JSON);
+            if (json.startsWith("```")) {
+                json = json.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
+            }
+            final JsonNode root = objectMapper.readTree(json);
+            final List<String> warnings = new ArrayList<>();
+            final JsonNode normalized = normalizeNode(root, "$", warnings);
+            final String result = objectMapper.writeValueAsString(normalized);
+            final String warningsText = String.join(" \\n", warnings);
+            final String signature = makeSignature(warnings);
+            return Map.of(
+                    GENERATED_JSON.name(), result,
+                    HEURISTIC_WARNINGS.name(), warningsText,
+                    HEURISTIC_SIGNATURE.name(), signature);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to normalize JSON", e);
         }
-        final JsonNode root = objectMapper.readTree(json);
-        final List<String> warnings = new ArrayList<>();
-        final JsonNode normalized = normalizeNode(root, "$", warnings);
-        final String result = objectMapper.writeValueAsString(normalized);
-        final String warningsText = String.join(" \n", warnings);
-        final String signature = makeSignature(warnings);
-        return Map.of(
-                GENERATED_JSON.name(), result,
-                HEURISTIC_WARNINGS.name(), warningsText,
-                HEURISTIC_SIGNATURE.name(), signature);
     }
 
     private JsonNode normalizeNode(final JsonNode node, final String path, final List<String> warnings) {
@@ -80,15 +86,10 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     private String normalizeString(String s) {
         if (s == null) return null;
         String out = s;
-        // Trim surrounding whitespace including non-breaking spaces
         out = trimUnicode(out);
-        // Normalize Unicode dashes to ASCII hyphen-minus
-        out = out.replaceAll("[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]", "-");
-        // Special-case: accidentally prefixed '+' for patterns like ddd-ddd (e.g., unit_code)
-        out = out.replaceAll("^\\+(\\d{3}-\\d{3})$", "$1");
-        // Replace various NBSPs with regular space
-        out = out.replaceAll("[\u00A0\u2007\u202F]", " ");
-        // Normalize full-width digits to ASCII
+        out = out.replaceAll("[\\u2010\\u2011\\u2012\\u2013\\u2014\\u2015\\u2212]", "-");
+        out = out.replaceAll("^\\+(\\\\d{3}-\\\\d{3})$", "$1");
+        out = out.replaceAll("[\\u00A0\\u2007\\u202F]", " ");
         out = normalizeFullWidthDigits(out);
         return out;
     }
@@ -129,9 +130,8 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     private boolean isSuspiciousPlaceholder(final String s) {
         final String v = s == null ? "" : s.trim();
         if (v.isEmpty()) return false;
-        final String digits = v.replaceAll("\\D", "");
+        final String digits = v.replaceAll("\\\\D", "");
         if (digits.length() >= 5) {
-            // all-equal digits
             boolean allEqual = true;
             for (int i = 1; i < digits.length(); i++) {
                 if (digits.charAt(i) != digits.charAt(0)) {
@@ -140,14 +140,10 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
                 }
             }
             if (allEqual) return true;
-            // monotonic sequences length >=5
             if (isMonotonicSequence(digits, true) || isMonotonicSequence(digits, false)) return true;
         }
-        // trivial groups
-        if (v.matches("(?i).*\\b123-456\\b.*") || v.matches(".*\\b000-000\\b.*")) return true;
-        // dummy words
-        if (v.matches("(?i).*(^|\\b)(test|example|пример|тест)(\\b|$).*")) return true;
-        // very overused Russian placeholder name
+        if (v.matches("(?i).*\\\\b123-456\\\\b.*") || v.matches(".*\\\\b000-000\\\\b.*")) return true;
+        if (v.matches("(?i).*(^|\\\\b)(test|example|пример|тест)(\\\\b|$).*")) return true;
         if (v.equalsIgnoreCase("Иванов Иван Иванович")) return true;
         return false;
     }

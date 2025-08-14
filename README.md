@@ -59,9 +59,9 @@ graph TD
   - `spring.ai.gigachat.chat.options.max-tokens`: `${SPRING_AI_GIGACHAT_MAX_TOKENS:1500}`
 
 **Run Examples**
-- Default mix: `java -jar target/app.jar`
-- Only GigaChat: `SPRING_PROFILES_ACTIVE=gigachat-only java -jar target/app.jar`
-- Only OpenRouter: `SPRING_PROFILES_ACTIVE=openrouter-only OPENROUTER_API_KEY=... java -jar target/app.jar`
+- Default mix: `java -jar target/*.jar`
+- Only GigaChat: `SPRING_PROFILES_ACTIVE=gigachat-only java -jar target/*.jar`
+- Only OpenRouter: `SPRING_PROFILES_ACTIVE=openrouter-only OPENROUTER_API_KEY=... java -jar target/*.jar`
 
 **Formatting**
 - Check: `mvn -q -DskipTests verify` (Spotless runs in verify).

@@ -1,9 +1,6 @@
 package github.ai.qa.solutions.configuration;
 
-import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -144,16 +141,6 @@ public class AiClientsConfiguration {
     // Strongly-typed routing properties for node -> model mapping
     // --------------------------------------------------------------
 
-    @Setter
-    @Getter
     @ConfigurationProperties(prefix = "ai.model-routing")
-    public static class NodeModelRoutingProperties {
-        /**
-         * Map of NodeSimpleName -> model name as understood by the provider.
-         * Example:
-         *   ReasonAndRouteNode: deepseek/deepseek-r1
-         *   GenerateJsonBySchemaTool: GigaChat-2-Max
-         */
-        private Map<String, String> nodes = new HashMap<>();
-    }
+    public static record NodeModelRoutingProperties(Map<String, String> nodes) {}
 }
