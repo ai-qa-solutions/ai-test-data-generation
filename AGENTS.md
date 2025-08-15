@@ -26,6 +26,7 @@ set -euo pipefail
 
 # 1) Format & static checks
 mvn -q spotless:apply
+mvn -q -DskipTests=true checkstyle:check
 
 # 2) Build & run all tests (unit + any configured integration tests)
 #    'verify' runs checks after tests in the Maven lifecycle.
