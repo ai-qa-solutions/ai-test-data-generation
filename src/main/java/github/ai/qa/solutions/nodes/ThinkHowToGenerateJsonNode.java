@@ -14,13 +14,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ThinkHowToGenerateJsonNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(ThinkHowToGenerateJsonNode.class);
+    /** Tool that creates a structured generation plan. */
     private final ThinkHowToGenerateTool thinkHowToGenerateTool;
 
     public ThinkHowToGenerateJsonNode(final ThinkHowToGenerateTool thinkHowToGenerateTool) {
         this.thinkHowToGenerateTool = thinkHowToGenerateTool;
     }
 
+    /**
+     * Thinks through how to generate data given the schema and user prompt.
+     *
+     * @param state current flow state
+     * @return state delta with PLAN_GENERATION thought text
+     */
     @Override
     public Map<String, Object> apply(final AgentState state) {
         log.info("▶️ Stage: ThinkHowToGenerateJsonNode — starting");

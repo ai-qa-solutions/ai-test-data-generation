@@ -18,8 +18,7 @@
             <property name="allowMissingReturnTag" value="false"/>
             <property name="validateThrows" value="true"/>
             <!-- Common exemptions: overrides and JUnit lifecycle -->
-            <property name="allowedAnnotations"
-                      value="Override, Test, BeforeEach, AfterEach, BeforeAll, AfterAll, ParameterizedTest, RepeatedTest"/>
+            <property name="allowedAnnotations" value="Override, Test, BeforeEach, AfterEach, BeforeAll, AfterAll, ParameterizedTest, RepeatedTest"/>
         </module>
 
         <!-- Require Javadoc on all fields (incl. private). Exempt serialVersionUID. -->

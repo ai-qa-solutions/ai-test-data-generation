@@ -58,7 +58,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig {
+    /** Framework logger for flow wiring diagnostics. */
     private static final Logger log = LoggerFactory.getLogger(AgentApplicationConfiguration.class);
+    /** Application context used to resolve the built {@link LangGraphFlow}. */
     private final ApplicationContext context;
 
     public AgentApplicationConfiguration(final ApplicationContext context) {
@@ -157,6 +159,7 @@ public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig
      * @param reasonAndRouteNode         node that decides the next step and emits {@link Decision}
      * @param normalizeGeneratedJsonNode node that normalizes produced JSON
      * @return the fully wired {@link StateGraph}
+     * @throws org.bsc.langgraph4j.GraphStateException if the graph definition is inconsistent
      */
     @Bean
     public StateGraph<AgentState> stateGraph(
@@ -237,6 +240,7 @@ public class AgentApplicationConfiguration extends AbstractLangGraphStudioConfig
      * Returns a Mermaid diagram of the flow computed from the same constants and flags.
      * Useful for logs, Actuator endpoints, tests, and documentation.
      *
+     * @param stateGraph the wired state graph
      * @return Mermaid graph in "graph TD" syntax
      */
     @Bean(name = "agentFlowMermaid")

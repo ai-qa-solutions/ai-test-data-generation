@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(ValidateJsonSchemaNode.class);
     /** Router that selects the appropriate chat client for this node. */
     private final ChatClientRouter router;
@@ -50,6 +51,7 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
         this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper");
     }
 
+    /** Prompt template to instruct the model to call the validator tool. */
     private static final String PROMPT_TEMPLATE =
             """
             Validate the following JSON Schema strictly by calling the tool `validateJsonSchema`.
@@ -59,6 +61,7 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
             %s
             """;
 
+    /** System instruction to enforce tool-call-only behavior. */
     private static final String SYSTEM_INSTRUCTION =
             """
             You MUST call the tool `validateJsonSchema` to validate and compact the schema.
@@ -98,7 +101,12 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
                 () -> new IllegalStateException("Incorrect jsonSchema: cannot parse tool response"));
     }
 
-    /** Removes Markdown code fences if present. */
+    /**
+     * Removes Markdown code fences if present.
+     *
+     * @param s possibly fenced text
+     * @return text without surrounding fences
+     */
     private String stripFences(@NonNull final String s) {
         if (!s.startsWith("```")) return s;
         return s.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
@@ -107,6 +115,9 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
     /**
      * Parses the validator response and returns either compact schema + optional version,
      * or empty when the content is not in the expected shape.
+     *
+     * @param content tool or model JSON output
+     * @return parsed map when valid; otherwise empty
      */
     private Optional<Map<String, Object>> parse(final String content) {
         if (content == null || content.isBlank()) return Optional.empty();

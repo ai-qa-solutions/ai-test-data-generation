@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class NodeModelChatClientRouter implements ChatClientRouter {
+    /** Logs routing decisions. */
     private static final Logger log = LoggerFactory.getLogger(NodeModelChatClientRouter.class);
     /** Provider for GigaChat-backed {@link ChatClient} (generative/produce JSON). */
     private final ObjectProvider<ChatClient> gigaChatClient;
@@ -67,7 +68,7 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
     static final class Decision {
         /** Selected family: "GigaChat" or "OpenRouter". */
         final String family;
-        /** Model label: explicit model or one of <default>/<heuristic>. */
+        /** Model label: explicit model or one of {@code <default>} / {@code <heuristic>}. */
         final String modelLabel;
 
         Decision(final String family, final String modelLabel) {
@@ -76,7 +77,13 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
         }
     }
 
-    /** Pure decision logic that chooses target family and model label. */
+    /**
+     * Pure decision logic that chooses target family and model label.
+     *
+     * @param nodeOrToolSimpleName simple class name of node/tool
+     * @param configured optional overrides mapping simple name to model string
+     * @return routing decision including family and label
+     */
     static Decision decideFamily(final String nodeOrToolSimpleName, final Map<String, String> configured) {
         final String model = configured == null ? null : configured.get(nodeOrToolSimpleName);
         if (model != null && !model.isBlank()) {
@@ -108,13 +115,23 @@ public class NodeModelChatClientRouter implements ChatClientRouter {
         return pickAndLog(nodeOrToolSimpleName, d.family, d.modelLabel, openRouterClient, gigaChatClient);
     }
 
-    /** Heuristic: whether model string denotes a GigaChat model. */
+    /**
+     * Heuristic: whether model string denotes a GigaChat model.
+     *
+     * @param model model identifier string
+     * @return true when likely a GigaChat model
+     */
     private static boolean isGigaChatModel(final String model) {
         final String m = model.toLowerCase();
         return m.contains("gigachat") || m.startsWith("giga");
     }
 
-    /** Heuristic: whether model string denotes an OpenRouter model. */
+    /**
+     * Heuristic: whether model string denotes an OpenRouter model.
+     *
+     * @param model model identifier string
+     * @return true when likely an OpenRouter model
+     */
     private static boolean isOpenRouterModel(final String model) {
         // OpenRouter models typically include provider prefix like provider/model
         final String m = model.toLowerCase();

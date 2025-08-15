@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(VerifyJsonByJsonSchemaNode.class);
     /**
      * Tool that performs strict JSON-vs-Schema validation locally (no LLM).
@@ -67,13 +68,16 @@ public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
     /**
      * Marker used when validation passes without errors.
      */
+    /** Display marker for successful validation. */
     private static final String OK = "OK";
 
     /**
      * Marker used when the validator response cannot be interpreted.
      */
+    /** Display marker when validation cannot be interpreted. */
     private static final String UNKNOWN = "UNKNOWN";
 
+    /** Prompt template used to instruct the model to call the validation tool. */
     private static final String PROMPT_TEMPLATE =
             """
             Validate the JSON against the schema by calling the tool `validateJsonAgainstJsonSchema`.
@@ -85,11 +89,13 @@ public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
             SCHEMA:
             %s
             """;
+    /** System instruction reinforcing the tool-call-only requirement. */
     private static final String SYSTEM_INSTRUCTION =
             """
             You MUST call the tool to validate. Return only the tool's JSON output.
             No explanations, no markdown.
             """;
+    /** Display text for unknown validator result. */
     private static final String UNKNOWN_RESULT = "Unknown validation error";
 
     /**
@@ -180,14 +186,18 @@ public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
     }
 
     /**
-     * Builds the success result (OK/OK).
+     * Builds the success result.
+     *
+     * @return map containing OK display text and signature
      */
     private Map<String, Object> okResult() {
         return Map.of(VALIDATION_RESULT.name(), OK, VALIDATION_SIGNATURE.name(), OK);
     }
 
     /**
-     * Builds the unknown result (used when validator output is missing or not understood).
+     * Builds the unknown result used when validator output is missing or not understood.
+     *
+     * @return map containing unknown display text and signature
      */
     private Map<String, Object> unknown() {
         return Map.of(VALIDATION_RESULT.name(), UNKNOWN_RESULT, VALIDATION_SIGNATURE.name(), UNKNOWN);

@@ -40,7 +40,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
+    /** Framework logger for normalization diagnostics. */
     private static final Logger log = LoggerFactory.getLogger(NormalizeGeneratedJsonNode.class);
+    /** JSON mapper used for parsing and serialization. */
     private final ObjectMapper objectMapper;
 
     public NormalizeGeneratedJsonNode(final ObjectMapper objectMapper) {
@@ -111,6 +113,9 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     /**
      * Applies textual normalization to a single string value: trims Unicode/ASCII spaces,
      * unifies dashes, converts full-width digits, and fixes specific patterns.
+     *
+     * @param s input string; may be null
+     * @return normalized string, or null when input is null
      */
     private String normalizeString(String s) {
         if (s == null) return null;
@@ -123,7 +128,12 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
         return out;
     }
 
-    /** Trims ASCII and common Unicode spaces (NBSP/NNBSP/thin space) from both ends. */
+    /**
+     * Trims ASCII and common Unicode spaces (NBSP/NNBSP/thin space) from both ends.
+     *
+     * @param s input string
+     * @return string without leading/trailing Unicode spaces
+     */
     private String trimUnicode(String s) {
         int len = s.length();
         int st = 0;
@@ -140,11 +150,22 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
         return s.substring(st, len);
     }
 
+    /**
+     * Checks whether a code point should be treated as trimmable whitespace.
+     *
+     * @param codePoint Unicode code point
+     * @return true when considered whitespace for trimming
+     */
     private boolean isTrimChar(int codePoint) {
         return Character.isWhitespace(codePoint) || codePoint == 0x00A0 || codePoint == 0x2007 || codePoint == 0x202F;
     }
 
-    /** Converts full-width digits (\uFF10–\uFF19) to ASCII digits (0–9). */
+    /**
+     * Converts full-width digits (\uFF10–\uFF19) to ASCII digits (0–9).
+     *
+     * @param s input string
+     * @return string where full-width digits are converted to ASCII
+     */
     private String normalizeFullWidthDigits(String s) {
         StringBuilder sb = new StringBuilder(s.length());
         for (int i = 0; i < s.length(); i++) {
@@ -161,6 +182,9 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     /**
      * Heuristically flags placeholder-like strings: long runs of equal/monotonic digits,
      * explicit literals like "123-456"/"000-000", or generic test words.
+     *
+     * @param s candidate value
+     * @return true when value looks like a placeholder rather than lifelike data
      */
     private boolean isSuspiciousPlaceholder(final String s) {
         final String v = s == null ? "" : s.trim();
@@ -183,6 +207,13 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
         return false;
     }
 
+    /**
+     * Detects a monotonic run of at least 5 ascending or descending digits.
+     *
+     * @param digits digits-only string
+     * @param asc true to check ascending, false for descending
+     * @return true when a 5+ length monotonic run exists
+     */
     private boolean isMonotonicSequence(final String digits, final boolean asc) {
         if (digits == null || digits.length() < 5) return false;
         int run = 1;
@@ -201,6 +232,12 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
         return false;
     }
 
+    /**
+     * Builds a deterministic signature from warnings to aid routing/deduplication.
+     *
+     * @param warnings collected warning messages
+     * @return stable signature or empty string when no warnings
+     */
     private String makeSignature(final List<String> warnings) {
         if (warnings == null || warnings.isEmpty()) return "";
         final List<String> copy = new ArrayList<>(warnings);

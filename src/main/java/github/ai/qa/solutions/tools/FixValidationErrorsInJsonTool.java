@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public record FixValidationErrorsInJsonTool(ChatClientRouter router) {
+    /** Logs tool execution details. */
     private static final Logger log = LoggerFactory.getLogger(FixValidationErrorsInJsonTool.class);
 
     @Tool(

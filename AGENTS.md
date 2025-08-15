@@ -18,6 +18,7 @@
 
 # Single Gatekeeper (MUST create if missing)
 
+Do not touch gatekeeper config files in configs folder, such as checkstyle.xml!
 Create an executable script at `bin/verify.sh` with **exactly** this content:
 
 ```bash

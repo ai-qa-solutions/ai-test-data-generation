@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public record ThinkHowToFixJsonTool(ChatClientRouter router) implements PlanFixProvider {
+    /** Logs tool execution details. */
     private static final Logger log = LoggerFactory.getLogger(ThinkHowToFixJsonTool.class);
 
     @Tool(

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public record ValidateJsonBySchemaTool(SchemaVersionDetector versionDetector) {
+    /** Logs tool execution details. */
     private static final Logger log = LoggerFactory.getLogger(ValidateJsonBySchemaTool.class);
 
     @Tool(

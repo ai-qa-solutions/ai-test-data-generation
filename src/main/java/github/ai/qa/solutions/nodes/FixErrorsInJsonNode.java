@@ -15,13 +15,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FixErrorsInJsonNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(FixErrorsInJsonNode.class);
+    /** Tool that applies recommended fixes to invalid JSON. */
     private final FixValidationErrorsInJsonTool fixValidationErrorsInJsonTool;
 
     public FixErrorsInJsonNode(final FixValidationErrorsInJsonTool fixValidationErrorsInJsonTool) {
         this.fixValidationErrorsInJsonTool = fixValidationErrorsInJsonTool;
     }
 
+    /**
+     * Applies LLM-recommended fixes to the JSON failing validation.
+     *
+     * @param state current flow state
+     * @return state delta containing the corrected JSON
+     */
     @Override
     public Map<String, Object> apply(final AgentState state) {
         log.info("▶️ Stage: FixErrorsInJsonNode — starting");

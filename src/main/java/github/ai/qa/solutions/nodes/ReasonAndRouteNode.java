@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReasonAndRouteNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(ReasonAndRouteNode.class);
+    /** Router for picking the proper chat client. */
     private final ChatClientRouter router;
+    /** JSON parser for routing responses. */
     private final ObjectMapper objectMapper;
 
     public ReasonAndRouteNode(final ChatClientRouter router, final ObjectMapper objectMapper) {
@@ -25,8 +28,11 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
         this.objectMapper = objectMapper;
     }
 
+    /** Decision constant: end the flow. */
     private static final String DECISION_END = "END";
+    /** Decision constant: attempt a fix. */
     private static final String DECISION_FIX = "FIX";
+    /** Decision constant: regenerate JSON. */
     private static final String DECISION_REGENERATE = "REGENERATE";
 
     @Override

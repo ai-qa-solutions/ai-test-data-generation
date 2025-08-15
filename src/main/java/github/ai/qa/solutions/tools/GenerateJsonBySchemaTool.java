@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public record GenerateJsonBySchemaTool(ChatClientRouter router) {
+    /** Logs tool execution details. */
     private static final Logger log = LoggerFactory.getLogger(GenerateJsonBySchemaTool.class);
 
     @Tool(
