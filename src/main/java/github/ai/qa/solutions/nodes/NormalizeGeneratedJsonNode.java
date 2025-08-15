@@ -66,7 +66,7 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
             final List<String> warnings = new ArrayList<>();
             final JsonNode normalized = normalizeNode(root, "$", warnings);
             final String result = objectMapper.writeValueAsString(normalized);
-            final String warningsText = String.join(" \\n", warnings);
+            final String warningsText = String.join("\n", warnings);
             final String signature = makeSignature(warnings);
             return Map.of(
                     GENERATED_JSON.name(), result,
@@ -117,7 +117,7 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
         String out = s;
         out = trimUnicode(out);
         out = out.replaceAll("[\\u2010\\u2011\\u2012\\u2013\\u2014\\u2015\\u2212]", "-");
-        out = out.replaceAll("^\\+(\\\\d{3}-\\\\d{3})$", "$1");
+        out = out.replaceAll("^\\+(\\d{3}-\\d{3})$", "$1");
         out = out.replaceAll("[\\u00A0\\u2007\\u202F]", " ");
         out = normalizeFullWidthDigits(out);
         return out;
@@ -165,7 +165,7 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     private boolean isSuspiciousPlaceholder(final String s) {
         final String v = s == null ? "" : s.trim();
         if (v.isEmpty()) return false;
-        final String digits = v.replaceAll("\\\\D", "");
+        final String digits = v.replaceAll("\\D", "");
         if (digits.length() >= 5) {
             boolean allEqual = true;
             for (int i = 1; i < digits.length(); i++) {
@@ -177,8 +177,8 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
             if (allEqual) return true;
             if (isMonotonicSequence(digits, true) || isMonotonicSequence(digits, false)) return true;
         }
-        if (v.matches("(?i).*\\\\b123-456\\\\b.*") || v.matches(".*\\\\b000-000\\\\b.*")) return true;
-        if (v.matches("(?i).*(^|\\\\b)(test|example|пример|тест)(\\\\b|$).*")) return true;
+        if (v.matches("(?i).*\\b123-456\\b.*") || v.matches(".*\\b000-000\\b.*")) return true;
+        if (v.matches("(?i).*(^|\\b)(test|example|пример|тест)(\\b|$).*")) return true;
         if (v.equalsIgnoreCase("Иванов Иван Иванович")) return true;
         return false;
     }
