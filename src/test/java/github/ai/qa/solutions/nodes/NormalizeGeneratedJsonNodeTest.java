@@ -88,8 +88,8 @@ class NormalizeGeneratedJsonNodeTest {
         String signature = (String) out.get(HEURISTIC_SIGNATURE.name());
         assertNotNull(warnings);
         assertNotNull(signature);
-        // Path should include $.phone; both fields should be non-empty
-        org.junit.jupiter.api.Assertions.assertTrue(warnings.contains("$.phone"));
+        // Path should include $/phone; both fields should be non-empty
+        org.junit.jupiter.api.Assertions.assertTrue(warnings.contains("$/phone"));
         org.junit.jupiter.api.Assertions.assertFalse(warnings.isBlank());
         org.junit.jupiter.api.Assertions.assertFalse(signature.isBlank());
     }
