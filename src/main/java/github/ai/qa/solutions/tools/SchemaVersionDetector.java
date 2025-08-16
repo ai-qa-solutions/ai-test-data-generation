@@ -7,6 +7,7 @@ import com.networknt.schema.SpecVersion;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,15 +41,15 @@ public record SchemaVersionDetector(ObjectMapper objectMapper) {
             }
             // Heuristics when $schema is absent or unrecognized
             final String text = root.toString();
-            if (contains(text, "\"prefixItems\"")) {
+            if (StringUtils.contains(text, "\"prefixItems\"")) {
                 // Introduced in 2020-12
                 return SpecVersion.VersionFlag.V202012;
             }
-            if (contains(text, "\"$defs\"")
-                    || contains(text, "\"unevaluatedProperties\"")
-                    || contains(text, "\"unevaluatedItems\"")
-                    || contains(text, "\"dependentRequired\"")
-                    || contains(text, "\"dependentSchemas\"")) {
+            if (StringUtils.contains(text, "\"$defs\"")
+                    || StringUtils.contains(text, "\"unevaluatedProperties\"")
+                    || StringUtils.contains(text, "\"unevaluatedItems\"")
+                    || StringUtils.contains(text, "\"dependentRequired\"")
+                    || StringUtils.contains(text, "\"dependentSchemas\"")) {
                 // Keywords standardized since 2019-09
                 return SpecVersion.VersionFlag.V201909;
             }
@@ -122,17 +123,6 @@ public record SchemaVersionDetector(ObjectMapper objectMapper) {
             }
         }
         return SpecVersion.VersionFlag.V4;
-    }
-
-    /**
-     * Returns true if the given JSON text contains the token.
-     *
-     * @param text JSON text to scan
-     * @param token token to search for
-     * @return true if token is present
-     */
-    private static boolean contains(final String text, final String token) {
-        return text != null && text.contains(token);
     }
 
     /**
