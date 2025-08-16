@@ -75,6 +75,7 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
 
         String content;
         try {
+            log.info("🛠️ Agent as tool 🤖: ValidateJsonSchemaTool");
             content = router.forNode(getClass().getSimpleName())
                     .prompt(PROMPT_TEMPLATE.formatted(schema))
                     .system(SYSTEM_INSTRUCTION)
@@ -86,6 +87,7 @@ public class ValidateJsonSchemaNode implements NodeAction<AgentState> {
         }
 
         if (content == null || content.isBlank()) {
+            log.info("🛠️ Fallback to hardcoded validation 💻");
             content = validateJsonSchemaTool.validateAndCompactSchema(schema);
         } else if (content.startsWith("```")) {
             content = stripFences(content);

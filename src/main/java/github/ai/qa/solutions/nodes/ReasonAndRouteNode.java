@@ -43,8 +43,6 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
 
         final String validation = state.get(VALIDATION_RESULT);
 
-        // Removed heuristic-driven FIX: if schema validation is OK, finish without extra realism passes
-
         // If already valid -> finish
         if ("OK".equalsIgnoreCase(validation)) {
             updates.put(DECISION.name(), DECISION_END);

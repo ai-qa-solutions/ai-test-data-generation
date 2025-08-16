@@ -114,6 +114,7 @@ public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
 
         String content;
         try {
+            log.info("🛠️ Agent as tool 🤖: ValidateJsonBySchemaTool");
             content = router.forNode(getClass().getSimpleName())
                     .prompt(PROMPT_TEMPLATE.formatted(json, schema))
                     .system(SYSTEM_INSTRUCTION)
@@ -125,6 +126,7 @@ public class VerifyJsonByJsonSchemaNode implements NodeAction<AgentState> {
         }
 
         if (content == null || content.isBlank()) {
+            log.info("🛠️ Fallback to hardcoded validation 💻");
             content = validateJsonBySchemaTool.validateJsonBySchema(json, schema);
         } else if (content.startsWith("```")) {
             content = stripFences(content);
