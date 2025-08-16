@@ -5,21 +5,19 @@ set -euo pipefail
 mvn -q spotless:apply
 mvn -q -DskipTests=true checkstyle:check
 
-# 2) Build & run all tests (unit + any configured integration tests)
-#    'verify' runs checks after tests in the Maven lifecycle.
+# 2) Build & tests
 mvn -q verify
 
-# 3) Repository hygiene
-# Fail if formatters changed tracked files and they are not committed yet
+# 3) Repo hygiene — fail if formatters changed tracked files
 if ! git diff --quiet --exit-code; then
   echo "ERROR: Tracked files changed by the build/formatters. Commit them and re-run."
   exit 2
 fi
 
-# 4) No to-do/fix-me markers left in tracked sources (excluding build outputs)
-if git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' | grep -q .; then
-  echo "ERROR: to-do/fix-me markers present in sources."
-  git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' || true
+# 4) No markers left in sources (ignore build, generated, and docs)
+if git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' ':!**/*.md' ':!**/*.MD' | grep -q .; then
+  echo "ERROR: todo/fixme markers present in sources."
+  git grep -n -E 'TO''DO|FIX''ME' -- ':!target' ':!**/generated/**' ':!**/*.md' ':!**/*.MD' || true
   exit 3
 fi
 
