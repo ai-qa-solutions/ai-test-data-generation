@@ -1,19 +1,9 @@
 package github.ai.qa.solutions.nodes;
 
 import static github.ai.qa.solutions.state.AgentState.StateKey.GENERATED_JSON;
-import static github.ai.qa.solutions.state.AgentState.StateKey.HEURISTIC_SIGNATURE;
-import static github.ai.qa.solutions.state.AgentState.StateKey.HEURISTIC_WARNINGS;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import github.ai.qa.solutions.state.AgentState;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import github.ai.qa.solutions.tools.NormalizeGeneratedJsonTool;
 import java.util.Map;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.slf4j.Logger;
@@ -33,8 +23,6 @@ import org.springframework.stereotype.Service;
  *
  * <p>Outputs written back to {@link github.ai.qa.solutions.state.AgentState}:
  * - GENERATED_JSON: normalized JSON string
- * - HEURISTIC_WARNINGS: warnings joined by newlines
- * - HEURISTIC_SIGNATURE: stable signature built from sorted warnings
  *
  * <p>Thread-safety: stateless; safe to reuse.</p>
  */
@@ -42,11 +30,16 @@ import org.springframework.stereotype.Service;
 public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     /** Framework logger for normalization diagnostics. */
     private static final Logger log = LoggerFactory.getLogger(NormalizeGeneratedJsonNode.class);
-    /** JSON mapper used for parsing and serialization. */
-    private final ObjectMapper objectMapper;
+    /** Tool for normalizing json */
+    private final NormalizeGeneratedJsonTool normalizeGeneratedJsonTool;
 
-    public NormalizeGeneratedJsonNode(final ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    /**
+     * Full constructor for explicit dependency injection and testing.
+     *
+     * @param normalizeGeneratedJsonTool normalization tool
+     */
+    public NormalizeGeneratedJsonNode(final NormalizeGeneratedJsonTool normalizeGeneratedJsonTool) {
+        this.normalizeGeneratedJsonTool = normalizeGeneratedJsonTool;
     }
 
     /**
@@ -60,188 +53,12 @@ public class NormalizeGeneratedJsonNode implements NodeAction<AgentState> {
     public Map<String, Object> apply(final AgentState state) {
         log.info("▶️ Stage: NormalizeGeneratedJsonNode — starting");
         try {
-            String json = state.get(GENERATED_JSON);
-            if (json.startsWith("```")) {
-                json = json.replaceAll("^```[a-zA-Z]*\\n|```$", "").trim();
-            }
-            final JsonNode root = objectMapper.readTree(json);
-            final List<String> warnings = new ArrayList<>();
-            final JsonNode normalized = normalizeNode(root, "$", warnings);
-            final String result = objectMapper.writeValueAsString(normalized);
-            final String warningsText = String.join("\n", warnings);
-            final String signature = makeSignature(warnings);
-            return Map.of(
-                    GENERATED_JSON.name(), result,
-                    HEURISTIC_WARNINGS.name(), warningsText,
-                    HEURISTIC_SIGNATURE.name(), signature);
+            final String json = state.get(GENERATED_JSON);
+            final String normalizedJson = normalizeGeneratedJsonTool.normalize(json);
+
+            return Map.of(GENERATED_JSON.name(), normalizedJson);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to normalize JSON", e);
         }
-    }
-
-    private JsonNode normalizeNode(final JsonNode node, final String path, final List<String> warnings) {
-        if (node == null || node.isNull()) {
-            return node;
-        }
-        if (node.isTextual()) {
-            final String s = node.asText();
-            final String normalized = normalizeString(s);
-            if (isSuspiciousPlaceholder(normalized)) {
-                warnings.add(path + ": suspicious placeholder-like value: '" + normalized + "'");
-            }
-            return TextNode.valueOf(normalized);
-        }
-        if (node.isObject()) {
-            final ObjectNode on = (ObjectNode) node;
-            final Iterator<Map.Entry<String, JsonNode>> it = on.fields();
-            while (it.hasNext()) {
-                final Map.Entry<String, JsonNode> e = it.next();
-                on.set(e.getKey(), normalizeNode(e.getValue(), path + "/" + e.getKey(), warnings));
-            }
-            return on;
-        }
-        if (node.isArray()) {
-            final ArrayNode an = (ArrayNode) node;
-            for (int i = 0; i < an.size(); i++) {
-                an.set(i, normalizeNode(an.get(i), path + "[" + i + "]", warnings));
-            }
-            return an;
-        }
-        return node;
-    }
-
-    /**
-     * Applies textual normalization to a single string value: trims Unicode/ASCII spaces,
-     * unifies dashes, converts full-width digits, and fixes specific patterns.
-     *
-     * @param s input string; may be null
-     * @return normalized string, or null when input is null
-     */
-    private String normalizeString(String s) {
-        if (s == null) return null;
-        String out = s;
-        out = trimUnicode(out);
-        out = out.replaceAll("[\\u2010\\u2011\\u2012\\u2013\\u2014\\u2015\\u2212]", "-");
-        out = out.replaceAll("^\\+(\\d{3}-\\d{3})$", "$1");
-        out = out.replaceAll("[\\u00A0\\u2007\\u202F]", " ");
-        out = normalizeFullWidthDigits(out);
-        return out;
-    }
-
-    /**
-     * Trims ASCII and common Unicode spaces (NBSP/NNBSP/thin space) from both ends.
-     *
-     * @param s input string
-     * @return string without leading/trailing Unicode spaces
-     */
-    private String trimUnicode(String s) {
-        int len = s.length();
-        int st = 0;
-        while (st < len) {
-            int cp = s.codePointAt(st);
-            if (!isTrimChar(cp)) break;
-            st += Character.charCount(cp);
-        }
-        while (st < len) {
-            int cp = s.codePointBefore(len);
-            if (!isTrimChar(cp)) break;
-            len -= Character.charCount(cp);
-        }
-        return s.substring(st, len);
-    }
-
-    /**
-     * Checks whether a code point should be treated as trimmable whitespace.
-     *
-     * @param codePoint Unicode code point
-     * @return true when considered whitespace for trimming
-     */
-    private boolean isTrimChar(int codePoint) {
-        return Character.isWhitespace(codePoint) || codePoint == 0x00A0 || codePoint == 0x2007 || codePoint == 0x202F;
-    }
-
-    /**
-     * Converts full-width digits (\uFF10–\uFF19) to ASCII digits (0–9).
-     *
-     * @param s input string
-     * @return string where full-width digits are converted to ASCII
-     */
-    private String normalizeFullWidthDigits(String s) {
-        StringBuilder sb = new StringBuilder(s.length());
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            if (ch >= '\uFF10' && ch <= '\uFF19') {
-                sb.append((char) ('0' + (ch - '\uFF10')));
-            } else {
-                sb.append(ch);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Heuristically flags placeholder-like strings: long runs of equal/monotonic digits,
-     * explicit literals like "123-456"/"000-000", or generic test words.
-     *
-     * @param s candidate value
-     * @return true when value looks like a placeholder rather than lifelike data
-     */
-    private boolean isSuspiciousPlaceholder(final String s) {
-        final String v = s == null ? "" : s.trim();
-        if (v.isEmpty()) return false;
-        final String digits = v.replaceAll("\\D", "");
-        if (digits.length() >= 5) {
-            boolean allEqual = true;
-            for (int i = 1; i < digits.length(); i++) {
-                if (digits.charAt(i) != digits.charAt(0)) {
-                    allEqual = false;
-                    break;
-                }
-            }
-            if (allEqual) return true;
-            if (isMonotonicSequence(digits, true) || isMonotonicSequence(digits, false)) return true;
-        }
-        if (v.matches("(?i).*\\b123-456\\b.*") || v.matches(".*\\b000-000\\b.*")) return true;
-        if (v.matches("(?i).*(^|\\b)(test|example|пример|тест)(\\b|$).*")) return true;
-        if (v.equalsIgnoreCase("Иванов Иван Иванович")) return true;
-        return false;
-    }
-
-    /**
-     * Detects a monotonic run of at least 5 ascending or descending digits.
-     *
-     * @param digits digits-only string
-     * @param asc true to check ascending, false for descending
-     * @return true when a 5+ length monotonic run exists
-     */
-    private boolean isMonotonicSequence(final String digits, final boolean asc) {
-        if (digits == null || digits.length() < 5) return false;
-        int run = 1;
-        for (int i = 1; i < digits.length(); i++) {
-            int prev = digits.charAt(i - 1) - '0';
-            int cur = digits.charAt(i) - '0';
-            if (asc) {
-                if (cur == prev + 1) run++;
-                else run = 1;
-            } else {
-                if (cur == prev - 1) run++;
-                else run = 1;
-            }
-            if (run >= 5) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Builds a deterministic signature from warnings to aid routing/deduplication.
-     *
-     * @param warnings collected warning messages
-     * @return stable signature or empty string when no warnings
-     */
-    private String makeSignature(final List<String> warnings) {
-        if (warnings == null || warnings.isEmpty()) return "";
-        final List<String> copy = new ArrayList<>(warnings);
-        Collections.sort(copy);
-        return String.join("|", copy);
     }
 }

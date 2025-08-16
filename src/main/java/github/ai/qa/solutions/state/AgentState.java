@@ -25,8 +25,6 @@ public class AgentState extends org.bsc.langgraph4j.state.AgentState {
         /** Detected JSON Schema version label. */
         SCHEMA_VERSION,
         /** Heuristic warnings gathered during normalization. */
-        HEURISTIC_WARNINGS,
-        /** Sorted signature of heuristic warnings. */
         HEURISTIC_SIGNATURE,
         /** Plan for generation. */
         PLAN_GENERATION,
