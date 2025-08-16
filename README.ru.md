@@ -39,16 +39,16 @@ graph TD
     plan_fix --> apply_fix[🔧 Применение исправлений]
     apply_fix --> normalize_json
     
-    style START fill:#e1f5fe
-    style END fill:#e8f5e8
-    style reason_and_route fill:#fff3e0
-    style validate_schema fill:#f3e5f5
-    style plan_generation fill:#e8f5e8
-    style generate_initial_json fill:#e8f5e8
-    style normalize_json fill:#fff9c4
-    style validate_json fill:#f3e5f5
-    style plan_fix fill:#ffebee
-    style apply_fix fill:#ffebee
+    style START fill:#1f2937,stroke:#3b82f6,stroke-width:2px,color:#ffffff
+    style END fill:#059669,stroke:#10b981,stroke-width:2px,color:#ffffff
+    style reason_and_route fill:#f59e0b,stroke:#f97316,stroke-width:2px,color:#000000
+    style validate_schema fill:#8b5cf6,stroke:#a855f7,stroke-width:2px,color:#ffffff
+    style plan_generation fill:#059669,stroke:#10b981,stroke-width:2px,color:#ffffff
+    style generate_initial_json fill:#0ea5e9,stroke:#0284c7,stroke-width:2px,color:#ffffff
+    style normalize_json fill:#eab308,stroke:#ca8a04,stroke-width:2px,color:#000000
+    style validate_json fill:#8b5cf6,stroke:#a855f7,stroke-width:2px,color:#ffffff
+    style plan_fix fill:#dc2626,stroke:#b91c1c,stroke-width:2px,color:#ffffff
+    style apply_fix fill:#dc2626,stroke:#b91c1c,stroke-width:2px,color:#ffffff
 ```
 
 ## 🚀 Быстрый старт
