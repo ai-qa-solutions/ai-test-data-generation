@@ -1,5 +1,9 @@
 .idea
 .allure
+allure-results/
+target/
+.DS_Store
+*.iml
 
 # Compiled class file
 *.class

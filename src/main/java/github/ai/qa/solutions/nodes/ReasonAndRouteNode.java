@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReasonAndRouteNode implements NodeAction<AgentState> {
+    /** Logs node lifecycle. */
     private static final Logger log = LoggerFactory.getLogger(ReasonAndRouteNode.class);
+    /** Router for picking the proper chat client. */
     private final ChatClientRouter router;
+    /** JSON parser for routing responses. */
     private final ObjectMapper objectMapper;
 
     public ReasonAndRouteNode(final ChatClientRouter router, final ObjectMapper objectMapper) {
@@ -25,8 +28,11 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
         this.objectMapper = objectMapper;
     }
 
+    /** Decision constant: end the flow. */
     private static final String DECISION_END = "END";
+    /** Decision constant: attempt a fix. */
     private static final String DECISION_FIX = "FIX";
+    /** Decision constant: regenerate JSON. */
     private static final String DECISION_REGENERATE = "REGENERATE";
 
     @Override
@@ -36,8 +42,6 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
         final Map<String, Object> updates = new HashMap<>();
 
         final String validation = state.get(VALIDATION_RESULT);
-
-        // Removed heuristic-driven FIX: if schema validation is OK, finish without extra realism passes
 
         // If already valid -> finish
         if ("OK".equalsIgnoreCase(validation)) {
@@ -114,8 +118,8 @@ public class ReasonAndRouteNode implements NodeAction<AgentState> {
                 .call()
                 .content();
 
-        String decision = DECISION_FIX;
-        String reasoning = "";
+        String decision;
+        String reasoning;
         try {
             final JsonNode root = objectMapper.readTree(response);
             decision = root.path("decision").asText(DECISION_FIX).toUpperCase();

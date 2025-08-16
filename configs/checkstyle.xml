@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <property name="severity" value="error"/>
+
+    <module name="TreeWalker">
+        <!-- Require Javadoc on all types (classes, interfaces, enums, records) -->
+        <module name="JavadocType">
+            <property name="scope" value="private"/>
+        </module>
+
+        <!-- Require Javadoc on all methods/constructors (Checkstyle 9.3 uses accessModifiers here) -->
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public, protected, package, private"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+            <property name="validateThrows" value="true"/>
+            <!-- Common exemptions: overrides and JUnit lifecycle -->
+            <property name="allowedAnnotations" value="Override, Test, BeforeEach, AfterEach, BeforeAll, AfterAll, ParameterizedTest, RepeatedTest"/>
+        </module>
+
+        <!-- Require Javadoc on all fields (incl. private). Exempt serialVersionUID. -->
+        <module name="JavadocVariable">
+            <property name="scope" value="private"/>
+            <property name="ignoreNamePattern" value="^(serialVersionUID)$"/>
+        </module>
+
+        <!-- "Nice" Javadoc quality checks -->
+        <module name="JavadocStyle">
+            <property name="checkFirstSentence" value="true"/>
+            <property name="endOfSentenceFormat" value="([.?!])"/>
+        </module>
+        <module name="SummaryJavadoc"/>
+        <module name="JavadocParagraph"/>
+        <module name="AtclauseOrder"/>
+        <module name="JavadocBlockTagLocation"/>
+        <module name="JavadocContentLocation"/>
+    </module>
+</module>

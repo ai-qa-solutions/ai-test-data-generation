@@ -37,6 +37,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <pmd.skip>true</pmd.skip>
 
         <spring-ai.version>1.0.1</spring-ai.version>
         <spring-ai-giga-chat.version>1.0.3</spring-ai-giga-chat.version>
@@ -46,10 +47,9 @@
         <langgraph4j.version>1.6.0</langgraph4j.version>
         <json-schema-validator.version>1.5.2</json-schema-validator.version>
 
-        <!-- Formatting -->
+        <!-- plugins -->
         <spotless.version>2.43.0</spotless.version>
-        <!-- Version of com.palantir.javaformat used by Spotless palantirJavaFormat step -->
-        <palantir.format.version>2.44.0</palantir.format.version>
+        <pmd-maven-plugin.version>3.26.0</pmd-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -104,6 +104,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- Common utilities -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
@@ -144,6 +149,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Allure core (no JUnit5 listener to avoid env hostname lookups) -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -151,13 +163,26 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>build-image-no-fork</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
+                <!--                <executions>-->
+                <!--                    <execution>-->
+                <!--                        <goals>-->
+                <!--                            <goal>build-image-no-fork</goal>-->
+                <!--                        </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
+            </plugin>
+
+            <!-- Ensure Allure does not attempt hostname lookup in restricted env -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <allure.hostName>localhost</allure.hostName>
+                        <ALLURE_HOST_NAME>localhost</ALLURE_HOST_NAME>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
 
             <!-- Code formatting with Spotless (Palantir Java Format) -->
@@ -181,6 +206,30 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <toolVersion>9.3</toolVersion>
+                    <configLocation>${project.basedir}/configs/checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <failsOnError>true</failsOnError>
+                    <violationSeverity>error</violationSeverity>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enforce-javadoc</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

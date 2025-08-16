@@ -3,14 +3,16 @@ package github.ai.qa.solutions.tools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchemaFactory;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public record ValidateJsonSchemaTool(ObjectMapper objectMapper, SchemaVersionDetector versionDetector) {
+    /** Logs tool execution details. */
+    private static final Logger log = LoggerFactory.getLogger(ValidateJsonSchemaTool.class);
 
     @Tool(
             name = "validateJsonSchema",
