@@ -61,8 +61,7 @@ public class NormalizeGeneratedJsonTool {
             final JsonNode root = objectMapper.readTree(stripped);
             final JsonNode normalized = normalizer.normalize(root);
 
-            final String normalizedJson = objectMapper.writeValueAsString(normalized);
-            return "{" + "\"ok\":true," + "\"normalizedJson\":" + objectMapper.writeValueAsString(normalizedJson) + "}";
+            return objectMapper.writeValueAsString(normalized);
         } catch (Exception e) {
             try {
                 return "{\"ok\":false,\"error\":" + objectMapper.writeValueAsString(e.getMessage()) + "}";
